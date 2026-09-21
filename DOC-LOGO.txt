@@ -1,0 +1,3 @@
+Logo STC CROP: dat file anh logo ten "stc-crop-logo.jpg" vao cung thu muc voi 4 file .html de logo hien thi.
+Neu khong co file, trang tu hien o "STC".
+Mo index.html de bat dau; 3 trang con (tinh-nang, cai-dat, video) lien ket tuong doi nen can giu cung thu muc.

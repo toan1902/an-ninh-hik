@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>An ninh thông minh nhà phố BMT | STC CROP</title>
+<meta name="description" content="Giải pháp camera AI, hàng rào hồng ngoại chống trèo và nút Đi ngủ đầu giường cho nhà phố Buôn Ma Thuột.">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f6f3; --surface:#fcfcfb; --surface2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --line:#e1e0d9; --line2:#c3c2b7; --accent:#0A1172; --accent-ink:#ffffff; --link:#0A1172;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4;
+  --good:#0ca30c; --good-ink:#006300; --warn:#fab219; --warn-ink:#7a4f00; --crit:#d03b3b; --crit-ink:#a32323;
+  --wall:#efeee9; --wall-line:#a9a89e; --room:#fbfbf9; --street:#dcdbd3; --glass:#cfe0f5; --tag-bg:#e9eafc;
+  --shadow:0 1px 2px rgba(11,11,11,.06), 0 8px 24px rgba(11,11,11,.06);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--link)}
+img{max-width:100%}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:650;letter-spacing:-.01em}
+h1{font-size:clamp(1.9rem,4.6vw,3rem)}
+h2{font-size:clamp(1.4rem,3vw,1.9rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 1em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--c1);outline-offset:2px;border-radius:4px}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:#0A1172;color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.site-header .wrap{display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;margin-right:auto}
+.brand .logo{height:40px;width:auto;border-radius:6px;display:block}
+.logo-fallback{display:none;place-items:center;width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#e7e9f5,#9aa1c9);color:#0A1172;font-weight:800;font-size:.8rem;letter-spacing:.02em}
+.brand-text{display:flex;flex-direction:column;font-weight:700;line-height:1.15}
+.brand-text small{font-weight:400;font-size:.72rem;color:#c8cbe8}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:#dfe1f5;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:.95rem}
+.nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav a[aria-current="page"]{background:#fff;color:#0A1172;font-weight:650}
+.theme-btn{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:6px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+.theme-btn:hover{background:rgba(255,255,255,.12)}
+
+/* generic blocks */
+section.block{padding:44px 0 8px}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);font-weight:650;margin-bottom:6px}
+.lead{font-size:1.08rem;color:var(--ink2);max-width:68ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:#0A1172;color:#fff;border-color:#0A1172}
+.btn.primary:hover{background:#1520a3}
+.btn.small{padding:6px 10px;font-size:.88rem;font-weight:550}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:650;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2);background:var(--surface2)}
+.badge.ok{color:var(--good-ink);border-color:var(--good)}
+.badge.todo{color:var(--warn-ink);border-color:var(--warn)}
+.badge.crit{color:var(--crit-ink);border-color:var(--crit)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:#0A1172;color:#fff;border-color:#0A1172}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--ink);padding:9px 15px;font:inherit;font-weight:600;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:#0A1172;color:#fff}
+table.tbl{width:100%;border-collapse:collapse;font-size:.93rem}
+.tbl th,.tbl td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.tbl tr[data-dev]{cursor:pointer}
+.tbl tr[data-dev]:hover td{background:var(--surface2)}
+.tbl tr.sel td{background:var(--tag-bg)}
+.scroll-x{overflow-x:auto}
+.note{border-left:4px solid var(--warn);background:var(--surface2);padding:10px 14px;border-radius:0 10px 10px 0;font-size:.93rem;color:var(--ink2)}
+.note.info{border-left-color:var(--c1)}
+.note strong{color:var(--ink)}
+.hero{background:linear-gradient(160deg,#0A1172 0%,#141e9a 60%,#2b36b8 100%);color:#fff;padding:52px 0 40px}
+.hero h1{margin-bottom:.35em}
+.hero .lead{color:#dfe1f5}
+.hero .btn{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);color:#fff}
+.hero .btn.primary{background:#fff;color:#0A1172;border-color:#fff}
+.hero .btn:hover{background:rgba(255,255,255,.18)}
+.hero .btn.primary:hover{background:#eceefb}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px}
+.tile b{display:block;font-size:2rem;line-height:1.1}
+.tile span{font-size:.88rem;color:#dfe1f5}
+.crumbs{font-size:.9rem;color:var(--ink2);margin:20px 0 6px}
+.footer{margin-top:56px;background:#0A1172;color:#dfe1f5;padding:28px 0;font-size:.92rem}
+.footer a{color:#fff}
+.footer .cols{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between}
+.pill-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0;font-size:.93rem}
+.kv dt{color:var(--ink2)}
+.kv dd{margin:0}
+@media (max-width:520px){.kv{grid-template-columns:1fr}.kv dt{font-weight:650}}
+@media print{.site-header,.theme-btn,.footer{display:none}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin:18px 0 14px}
+.toolbar .lab{font-size:.82rem;color:var(--ink2);font-weight:650;margin-right:8px}
+.stage{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.stage{grid-template-columns:1fr}}
+.house-card{padding:10px}
+svg.house{width:100%;height:auto;display:block}
+.house-card{overflow-x:auto}
+@media (max-width:640px){svg.house{min-width:520px}}
+svg.house text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+svg.house .lbl{font-size:12px;fill:var(--ink2)}
+svg.house .code{font-size:10.5px;font-weight:700;pointer-events:none}
+.dev{cursor:pointer;transition:opacity .2s}
+.dev .ring{fill:none;stroke:currentColor;stroke-width:2;opacity:0}
+.dev.on .ring{opacity:.55}
+.dev.off{opacity:.42}
+.dev.dim{opacity:.12}
+.dev.sel .ring{opacity:1;stroke-width:3;stroke:var(--ink)}
+.dev:focus-visible{outline:none}
+.dev:focus-visible .ring{opacity:1;stroke:var(--c1);stroke-width:3}
+.dev.flash .ring{animation:pulse 1s ease-in-out infinite}
+.dev.alarm .ring{animation:pulse .5s ease-in-out infinite;stroke:var(--crit);opacity:1}
+@keyframes pulse{0%,100%{stroke-width:2;opacity:.9}50%{stroke-width:7;opacity:.25}}
+.fov{fill:var(--c1);opacity:.14;pointer-events:none;transition:opacity .2s}
+.fov.off{opacity:0}
+.beam-line{stroke-width:2.5;stroke-dasharray:7 5;fill:none}
+.detail h3{margin-bottom:2px}
+.detail .meta{font-size:.85rem;color:var(--ink2);margin-bottom:10px}
+.state{display:flex;gap:8px;align-items:center;font-weight:650;margin:10px 0}
+.state .badge{font-size:.8rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem;color:var(--ink2);margin-top:8px}
+.legend span{display:inline-flex;align-items:center}
+.sim{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:900px){.sim{grid-template-columns:1fr}}
+.ev-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:520px){.ev-list{grid-template-columns:1fr}}
+.ev-list button{text-align:left;border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;font-size:.92rem;cursor:pointer}
+.ev-list button:hover{border-color:var(--accent)}
+.ev-list button.warn-ev{border-style:dashed}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 12px}
+.lv{border:1px solid var(--line2);border-radius:10px;padding:8px 10px;font-size:.85rem;color:var(--ink2);background:var(--surface2)}
+.lv b{display:block;color:var(--ink);font-size:.92rem}
+.lv.act{border-width:2px;color:var(--ink);background:var(--surface)}
+.lv.act.l0{border-color:var(--good)}
+.lv.act.l1{border-color:var(--warn)}
+.lv.act.l2{border-color:var(--crit)}
+.log{list-style:none;margin:0;padding:0;max-height:250px;overflow:auto;font-size:.9rem}
+.log li{padding:7px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
+.log time{color:var(--ink2);font-variant-numeric:tabular-nums;min-width:52px}
+.phone{width:min(100%,290px);margin:0 auto;border:2px solid var(--line2);border-radius:26px;padding:16px 12px;background:var(--surface2)}
+.phone .bar{width:60px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 12px}
+.push{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.88rem;margin-bottom:8px}
+.push.l2{border-color:var(--crit);border-width:2px}
+.push.l1{border-color:var(--warn);border-width:2px}
+.push b{display:block}
+/* chart */
+.chart{position:relative;padding:18px 18px 10px}
+.legend-row{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:14px;font-size:.88rem;color:var(--ink2)}
+.legend-row .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.rows{position:relative;display:grid;gap:14px;padding-left:112px;padding-right:74px}
+.row{position:relative;height:24px;display:flex;align-items:center}
+.row .name{position:absolute;left:-112px;width:100px;top:50%;transform:translateY(-50%);font-size:.9rem;font-weight:650;text-align:right;line-height:1.2}
+.row .name small{display:block;font-weight:400;color:var(--ink2);font-size:.72rem}
+.track{display:flex;gap:2px;height:24px;width:100%}
+.seg-bar{height:24px;background:var(--col);cursor:pointer;min-width:2px}
+.seg-bar:last-child{border-radius:0 4px 4px 0}
+.seg-bar:focus-visible{outline:3px solid var(--ink);outline-offset:1px}
+.row .total{position:absolute;right:-74px;width:68px;top:50%;transform:translateY(-50%);font-weight:700;font-size:.92rem}
+.gridlines{position:absolute;left:112px;right:74px;top:-6px;bottom:-2px;pointer-events:none}
+.gridlines i{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.gridlines em{position:absolute;bottom:-22px;transform:translateX(-50%);font-style:normal;font-size:.75rem;color:var(--ink2)}
+.axis-cap{text-align:center;font-size:.78rem;color:var(--ink2);margin-top:30px}
+.tip{position:absolute;z-index:5;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.82rem;padding:7px 10px;border-radius:8px;white-space:nowrap;opacity:0;transition:opacity .12s;box-shadow:var(--shadow)}
+.tip.show{opacity:1}
+.pkg{position:relative}
+.pkg.rec{border:2px solid #0A1172}
+:root[data-theme="dark"] .pkg.rec{border-color:var(--accent)}
+.pkg .price{font-size:1.9rem;font-weight:750;line-height:1.1;margin:6px 0 2px}
+.pkg .sub{font-size:.85rem;color:var(--ink2);margin-bottom:10px}
+.pkg ul{margin:0;padding-left:18px;font-size:.92rem}
+.pkg li{margin:3px 0}
+.pkg .badge{position:absolute;top:14px;right:14px}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:st}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.steps{grid-template-columns:1fr}}
+.steps li{counter-increment:st;position:relative}
+.steps li::before{content:counter(st);position:absolute;top:-12px;left:14px;width:26px;height:26px;border-radius:50%;background:#0A1172;color:#fff;font-weight:700;display:grid;place-items:center;font-size:.85rem}
+.steps h3{margin-top:8px;font-size:1rem}
+.steps p{font-size:.9rem;color:var(--ink2);margin:0}
+.fa summary{cursor:pointer;font-weight:650;padding:10px 0}
+.fa details{border-bottom:1px solid var(--line)}
+.fa .body{padding:0 0 12px;color:var(--ink2);font-size:.93rem}
+.cta{background:linear-gradient(160deg,#0A1172,#2b36b8);color:#fff;border-radius:18px;padding:28px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.cta .btn{background:#fff;color:#0A1172;border-color:#fff}
+</style>
+</head>
+<body>
+
+<header class="site-header"><div class="wrap">
+  <a class="brand" href="index.html" aria-label="STC CROP - trang chủ">
+    <img class="logo" src="stc-crop-logo.jpg" alt="STC CROP" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+    <span class="logo-fallback" aria-hidden="true">STC</span>
+    <span class="brand-text">STC CROP<small>An ninh thông minh nhà phố</small></span>
+  </a>
+  <nav class="nav" aria-label="Điều hướng chính"><a href="index.html" aria-current="page">Tổng quan</a><a href="tinh-nang.html">Tính năng chi tiết</a><a href="cai-dat.html">Cài đặt & hướng dẫn</a><a href="video.html">Video</a></nav>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Đổi giao diện sáng/tối">Sáng / Tối</button>
+</div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+  <span class="badge" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">Bản tư vấn dự kiến cho nhà phố tại Buôn Ma Thuột</span>
+  <h1 style="margin-top:12px">An ninh thông minh cho nhà phố:<br>camera AI, hàng rào chống trèo, nút Đi ngủ đầu giường</h1>
+  <p class="lead">Đi dây âm tường để giữ thẩm mỹ. Cảnh báo tại chỗ trước, chỉ hú còi trong nhà khi có hai bằng chứng độc lập, để không làm phiền hàng xóm.</p>
+  <div class="chips" style="margin-top:18px">
+    <a class="btn primary" href="#nha">Xem trên ngôi nhà</a>
+    <a class="btn" href="#mophong">Mô phỏng sự cố</a>
+    <a class="btn" href="#goi">So sánh 3 gói</a>
+    <a class="btn" href="cai-dat.html">Hướng dẫn cài đặt</a>
+  </div>
+  <div class="tiles" role="list">
+    <div class="tile" role="listitem"><b>5</b><span>camera AI ngoài trời, lọc người/xe</span></div>
+    <div class="tile" role="listitem"><b>2</b><span>tuyến hàng rào hồng ngoại chống trèo</span></div>
+    <div class="tile" role="listitem"><b>6</b><span>cửa có cảm biến từ, giấu âm khung cửa</span></div>
+    <div class="tile" role="listitem"><b>≤60s</b><span>thời gian hú tối đa, còi hướng vào trong nhà</span></div>
+  </div>
+</div></section>
+
+<div class="wrap">
+
+<section class="block" id="nha">
+  <div class="eyebrow">1. Hệ thống trên ngôi nhà</div>
+  <h2>Chạm vào từng thiết bị để xem vị trí và vai trò</h2>
+  <p class="lead">Đổi chế độ để thấy thiết bị nào đang canh. Hình minh họa nhà phố 3 tầng và sân thượng, vị trí thực tế chốt sau khảo sát.</p>
+
+  <div class="toolbar">
+    <div><span class="lab">Chế độ</span><div class="seg" id="modeSeg" role="group" aria-label="Chế độ hoạt động">
+      <button type="button" data-mode="home" aria-pressed="false">Ở nhà</button>
+      <button type="button" data-mode="sleep" aria-pressed="true">Đi ngủ</button>
+      <button type="button" data-mode="away" aria-pressed="false">Vắng nhà</button></div></div>
+    <div><span class="lab">Mặt nhà</span><div class="seg" id="viewSeg" role="group" aria-label="Mặt nhà">
+      <button type="button" data-view="front" aria-pressed="true">Mặt tiền</button>
+      <button type="button" data-view="rear" aria-pressed="false">Mặt sau</button></div></div>
+  </div>
+  <div class="chips" id="catChips" role="group" aria-label="Lọc theo nhóm thiết bị" style="margin-bottom:14px"></div>
+
+  <div class="stage">
+    <div class="card house-card"><div id="houseMount"></div>
+      <div class="legend" id="houseLegend"></div></div>
+    <aside class="card detail" id="detail" aria-live="polite"></aside>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Danh sách thiết bị theo chế độ hiện tại</h3>
+    <div class="scroll-x"><table class="tbl" id="devTable"><thead><tr><th>Thiết bị</th><th>Vị trí</th><th>Trạng thái</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section class="block" id="mophong">
+  <div class="eyebrow">2. Mô phỏng sự cố</div>
+  <h2>Hú còi 2 cấp: khi nào báo, khi nào im lặng</h2>
+  <p class="lead">Chọn chế độ ở trên rồi bấm các sự kiện dưới đây theo thứ tự. Mỗi sự kiện cách nhau 10 giây trong mô phỏng.</p>
+  <div class="note" style="margin:12px 0 18px"><strong>Lưu ý:</strong> đây là mô phỏng theo cấu hình đề xuất. Việc xác minh chéo giữa camera và trung tâm báo động còn phải thử trên thiết bị thật ở giai đoạn pilot.</div>
+
+  <div class="sim">
+    <div class="card">
+      <h3>Sự kiện <span class="badge" id="simMode">Đi ngủ</span></h3>
+      <div class="ev-list" id="evList"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn small" type="button" id="simReset">Làm lại từ đầu</button>
+      </div>
+      <h3 style="margin-top:18px">Nhật ký</h3>
+      <ul class="log" id="simLog"><li><time>T+0s</time><span>Hệ thống đang canh ở chế độ hiện tại. Bấm một sự kiện để bắt đầu.</span></li></ul>
+    </div>
+    <div class="card">
+      <h3>Kết quả</h3>
+      <div class="levels" id="levels">
+        <div class="lv l0" data-l="0"><b>Bình thường</b>Chỉ ghi hình</div>
+        <div class="lv l1" data-l="1"><b>Cấp 1</b>Cảnh báo tại chỗ</div>
+        <div class="lv l2" data-l="2"><b>Cấp 2</b>Hú còi trong nhà</div>
+      </div>
+      <p id="simText" style="margin-bottom:14px"></p>
+      <div class="phone" aria-label="Thông báo trên điện thoại"><div class="bar"></div><div id="phoneMount"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="goi">
+  <div class="eyebrow">3. So sánh 3 gói</div>
+  <h2>Gói Chuẩn đáp ứng đúng yêu cầu của căn nhà này</h2>
+  <p class="lead">Giá bán dự kiến theo từng hạng mục, đơn vị triệu đồng, chưa VAT. Chốt chính thức sau khảo sát.</p>
+
+  <div class="card chart" id="chartCard" style="margin-top:16px">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
+      <h3 style="margin:0">Giá bán dự kiến theo hạng mục (triệu đồng)</h3>
+      <button class="btn small" type="button" id="tblToggle" aria-pressed="false">Xem dạng bảng</button>
+    </div>
+    <div class="legend-row" id="chartLegend" style="margin-top:12px"></div>
+    <div id="chartView"></div>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <div class="grid g3" style="margin-top:16px" id="pkgCards"></div>
+</section>
+
+<section class="block" id="thicong">
+  <div class="eyebrow">4. Thi công đi dây âm tường</div>
+  <h2>Làm hai đợt để nhà vẫn đẹp</h2>
+  <p class="lead">Đợt một chôn ống và kéo dây trước khi tô trát; đợt hai lắp thiết bị sau khi sơn. Chi tiết từng bước ở trang <a href="cai-dat.html">Cài đặt & hướng dẫn</a>.</p>
+  <ol class="steps" style="margin-top:28px">
+    <li class="card"><h3>Khảo sát</h3><p>Chốt sơ đồ tuyến và vị trí thiết bị cùng chủ nhà và thầu xây dựng.</p></li>
+    <li class="card"><h3>Đợt 1: đi ống, kéo dây</h3><p>Chôn ống D20, kéo Cat6 và dây beam, chụp ảnh từng tuyến trước khi tô.</p></li>
+    <li class="card"><h3>Hoàn thiện xây dựng</h3><p>Thầu tô trát, sơn, lắp cửa. STC kiểm tra dây thông mạch.</p></li>
+    <li class="card"><h3>Đợt 2: lắp thiết bị</h3><p>Camera, beam, cảm biến, tủ kỹ thuật, sau khi sơn xong.</p></li>
+    <li class="card"><h3>Cấu hình</h3><p>Cài NVR, trung tâm báo động, ứng dụng và kịch bản 3 chế độ.</p></li>
+    <li class="card"><h3>Chạy thử 14 ngày</h3><p>Ghi số lần báo giả mỗi đêm, chỉnh độ nhạy.</p></li>
+    <li class="card"><h3>Nghiệm thu</h3><p>Chủ nhà tự thao tác 3 chế độ trên điện thoại và remote.</p></li>
+    <li class="card"><h3>Bảo trì</h3><p>Vệ sinh beam, kiểm tra pin và cảm biến mỗi 6 tháng.</p></li>
+  </ol>
+</section>
+
+<section class="block" id="chongbaogia">
+  <div class="eyebrow">5. Chống báo động giả</div>
+  <h2>Sáu nguyên nhân hay gặp ở nhà phố BMT và cách xử lý</h2>
+  <div class="card fa" style="margin-top:14px">
+    <details><summary>Nắng chiếu thẳng vào beam lúc bình minh hoặc hoàng hôn</summary><div class="body">Đổi hướng lắp, thêm chụp che, dùng beam nhiều tia cần bị chặn đồng thời. Kiểm tra 3 khung giờ 6h, 17h, 18h khi chạy thử.</div></details>
+    <details><summary>Côn trùng, nhện, mưa hắt, sương mù cao nguyên</summary><div class="body">Đặt độ trễ chặn 0,5 đến 1 giây, vệ sinh ống kính định kỳ, chọn beam đạt chuẩn chống nước tốt.</div></details>
+    <details><summary>Chim, mèo, chuột đi qua</summary><div class="body">Beam cần chặn hai tia cùng lúc. Camera chỉ tính sự kiện được nhận diện là người.</div></details>
+    <details><summary>Đèn xe, lá cây rung, gió làm camera báo</summary><div class="body">Vẽ vùng hàng rào ảo chỉ trên ban công và sân thượng, loại trừ lòng đường.</div></details>
+    <details><summary>Chủ nhà dậy đêm, mở cửa nội bộ</summary><div class="body">Chế độ Đi ngủ không canh cửa nội bộ và PIR trong nhà. Cửa chính có thời gian trễ vào 20 đến 30 giây để tắt bằng remote.</div></details>
+    <details><summary>Pin yếu, mất sóng phụ kiện</summary><div class="body">Bật giám sát phụ kiện, nhắn tin khi pin thấp, kiểm tra định kỳ 6 tháng.</div></details>
+  </div>
+</section>
+
+<section class="block">
+  <div class="cta">
+    <div><h2 style="color:#fff;margin-bottom:4px">Muốn khảo sát tại nhà?</h2><p style="margin:0;color:#dfe1f5">STC khảo sát 2 đến 3 giờ, chốt gói và báo giá chính thức.</p></div>
+    <div class="chips"><a class="btn" href="tel:0823047047">Gọi 0823 047 047</a><a class="btn" href="https://zalo.me/0934750769">Zalo 0934 750 769</a></div>
+  </div>
+</section>
+
+</div>
+</main>
+
+
+<footer class="footer"><div class="wrap"><div class="cols">
+  <div><strong style="color:#fff">Công ty TNHH Đầu tư và Công nghệ STC (STC CROP)</strong><br>Buôn Ma Thuột, Đắk Lắk<br>smarthomedaklak.com</div>
+  <div>Hotline: <a href="tel:0823047047">0823 047 047</a><br>Zalo: <a href="https://zalo.me/0934750769">0934 750 769</a></div>
+  <div>Bản tư vấn dự kiến, cập nhật 21/09/2026.<br>Giá và cấu hình chốt chính thức sau khảo sát hiện trường.</div>
+</div></div></footer>
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  if(btn){btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var sysDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var isDark=cur?cur==='dark':sysDark;
+    root.setAttribute('data-theme',isDark?'light':'dark');
+  });}
+})();
+</script>
+<script>
+(function(){
+var MODES={home:'Ở nhà',sleep:'Đi ngủ',away:'Vắng nhà'};
+var CATS=[['all','Tất cả'],['cam','Camera'],['beam','Hàng rào'],['door','Cảm biến cửa'],['btn','Nút bấm'],['hub','Trung tâm & còi']];
+var COL={cam:'var(--c1)',beam:'var(--c2)',door:'var(--c3)',btn:'var(--c4)',hub:'var(--c5)'};
+var CATNAME={cam:'Camera',beam:'Hàng rào',door:'Cảm biến cửa',btn:'Nút bấm',hub:'Trung tâm & còi'};
+var ST={
+ cam:{home:[1,'Ghi hình liên tục'],sleep:[1,'Ghi hình và canh hàng rào ảo, chỉ báo khi thấy người'],away:[1,'Ghi hình và canh hàng rào ảo, chỉ báo khi thấy người']},
+ beam:{home:[0,'Tắt để gia đình ra vào ban công, sân thượng'],sleep:[1,'Đang canh tuyến chống trèo'],away:[1,'Đang canh tuyến chống trèo']},
+ door:{home:[0,'Không canh'],sleep:[1,'Đang canh, trễ vào 20-30 giây (cửa chính)'],away:[1,'Đang canh, trễ vào 20-30 giây (cửa chính)']},
+ doorMain:{home:[1,'Chỉ chuông báo nhẹ'],sleep:[1,'Đang canh, trễ vào 20-30 giây'],away:[1,'Đang canh, trễ vào 20-30 giây']},
+ always:function(t){return {home:[1,t],sleep:[1,t],away:[1,t]}}
+};
+var DEV=[
+ {id:'c1',view:'front',cat:'cam',x:230,y:352,code:'C1',name:'Camera mặt tiền',model:'Hikvision DS-2CD2T46G2-ISU/SL',pos:'Trên cửa chính, nhìn vỉa hè',fov:'230,352 165,440 295,440',st:ST.cam,desc:'Camera 4MP AcuSense lọc người/xe, có còi và đèn nháy để cảnh báo tại chỗ trước khi hú còi trong nhà.',anchor:'camera'},
+ {id:'c2',view:'front',cat:'cam',x:482,y:196,code:'C2',name:'Camera ban công lầu 2',model:'Hikvision DS-2CD2T46G2-ISU/SL',pos:'Góc ban công, nhìn dọc lan can',fov:'482,198 120,194 120,238 482,238',st:ST.cam,desc:'Bao quát tuyến hàng rào chống trèo, dùng để xác nhận chéo khi beam bị chặn.',anchor:'camera'},
+ {id:'c3',view:'front',cat:'cam',x:336,y:82,code:'C3',name:'Camera sân thượng',model:'Hikvision DS-2CD2T46G2-ISU/SL',pos:'Góc nhà tum, nhìn toàn sân thượng',fov:'336,82 116,64 116,138 330,138',st:ST.cam,desc:'Nhìn toàn sân thượng và tuyến beam sân thượng.',anchor:'camera'},
+ {id:'b1',view:'front',cat:'beam',beam:[118,212,442,212],code:'B1',name:'Hàng rào hồng ngoại ban công',model:'Takex PBS-15T (gói Tiết kiệm: ABH-150L)',pos:'Dọc lan can ban công lầu 2, cao khoảng 1,1m',st:ST.beam,desc:'Hai trụ phát và thu tạo tia hồng ngoại vô hình. Người trèo qua lan can chặn tia và báo về trung tâm qua module DS-PM-WI1.',anchor:'beam'},
+ {id:'b2',view:'front',cat:'beam',beam:[118,122,322,122],code:'B2',name:'Hàng rào hồng ngoại sân thượng',model:'Takex PBS-15T (gói Tiết kiệm: ABH-150L)',pos:'Dọc mép sân thượng phía mặt tiền',st:ST.beam,desc:'Chặn đường đột nhập từ nhà bên cạnh hoặc từ mái xuống sân thượng.',anchor:'beam'},
+ {id:'d1',view:'front',cat:'door',x:270,y:372,code:'Đ1',name:'Cảm biến từ cửa chính',model:'Hikvision DS-PDMC-EG2-WB',pos:'Khung cửa chính tầng trệt',st:ST.doorMain,desc:'Contact âm khung cửa nối vào đầu vào có dây của cảm biến, không lộ ra ngoài.',anchor:'contact'},
+ {id:'d2',view:'front',cat:'door',x:408,y:378,code:'Đ2',name:'Cảm biến từ cửa sổ trệt',model:'Hikvision DS-PDMC-EG2-WB',pos:'Cửa sổ mặt tiền tầng trệt',st:ST.door,desc:'Cảm biến pin CR123A dùng khoảng 5 năm.',anchor:'contact'},
+ {id:'d3',view:'front',cat:'door',x:330,y:166,code:'Đ3',name:'Cảm biến từ cửa ban công',model:'Hikvision DS-PDMC-EG2-WB',pos:'Cửa ra ban công lầu 2',st:ST.door,desc:'Cửa mở khi đang Đi ngủ là bằng chứng thứ hai, báo ngay không cần chờ camera.',anchor:'contact'},
+ {id:'d4',view:'front',cat:'door',x:414,y:100,code:'Đ4',name:'Cảm biến từ cửa sân thượng',model:'Hikvision DS-PDMC-EG2-WB',pos:'Cửa nhà tum',st:ST.door,desc:'Bảo vệ lối lên sân thượng.',anchor:'contact'},
+ {id:'rm',view:'front',cat:'btn',x:146,y:228,code:'RM',name:'Remote đầu giường (nút Đi ngủ)',model:'Hikvision DS-PKF1-WB',pos:'Đầu giường phòng ngủ lầu 2',st:ST.always('Sẵn sàng bấm để đổi chế độ'),desc:'Bấm một nút trước khi ngủ để chuyển sang chế độ Đi ngủ. Việc gán nút vào đúng chế độ cần thử trên thiết bị thật.',anchor:'remote'},
+ {id:'sos',view:'front',cat:'btn',x:134,y:176,code:'SOS',name:'Nút khẩn cấp',model:'Hikvision DS-PDEB1-EG2-WB',pos:'Tường đầu giường',st:ST.always('Luôn sẵn sàng, bấm là báo ngay'),desc:'Nút gắn tường không dây, tamper trước và sau, pin CR2032 khoảng 3 năm.',anchor:'panic'},
+ {id:'hub',view:'front',cat:'hub',x:145,y:412,code:'TT',name:'Tủ kỹ thuật: trung tâm AX PRO, NVR, switch PoE, UPS',model:'DS-PWA64-Kit-WB, DS-7608NXI-K1, switch PoE',pos:'Tầng trệt, nơi thoáng, gần ổ cắm',st:ST.always('Luôn hoạt động, có pin dự phòng'),desc:'Bộ não của hệ thống. Trung tâm có pin dự phòng khoảng 12 giờ, UPS giữ NVR khi mất điện.',anchor:'hub'},
+ {id:'sir',view:'front',cat:'hub',x:262,y:312,code:'CÒI',name:'Còi trong nhà',model:'Hikvision DS-PS1-E-WB',pos:'Hành lang lầu 1',st:{home:[0,'Không hú'],sleep:[1,'Hú trong nhà tối đa 60 giây khi có báo động cấp 2'],away:[1,'Hú trong nhà tối đa 60 giây khi có báo động cấp 2']},desc:'Hướng vào trong nhà để đánh thức gia đình, không hú ra đường.',anchor:'siren'},
+ {id:'pir',view:'front',cat:'hub',x:352,y:300,code:'PIR',name:'Cảm biến chuyển động trong nhà',model:'PIR trong bộ AX PRO',pos:'Hành lang lầu 1',st:{home:[0,'Tắt'],sleep:[0,'Tắt, không canh trong nhà khi đang ngủ'],away:[1,'Đang canh trong nhà']},desc:'Chỉ bật khi Vắng nhà.',anchor:'hub'},
+ {id:'c4',view:'rear',cat:'cam',x:114,y:108,code:'C4',name:'Camera sân thượng phía sau',model:'Hikvision DS-2CD2T46G2-ISU/SL',pos:'Góc sau sân thượng, nhìn xuống hẻm hông',fov:'114,108 20,200 114,300',st:ST.cam,desc:'Bao quát hông và phía sau nhà.',anchor:'camera'},
+ {id:'c5',view:'rear',cat:'cam',x:362,y:352,code:'C5',name:'Camera cửa hậu',model:'Hikvision DS-2CD2T46G2-ISU/SL',pos:'Trên cửa hậu tầng trệt',fov:'362,352 300,440 430,440',st:ST.cam,desc:'Nhìn lối ra vào phía sau.',anchor:'camera'},
+ {id:'d5',view:'rear',cat:'door',x:414,y:396,code:'Đ5',name:'Cảm biến từ cửa hậu',model:'Hikvision DS-PDMC-EG2-WB',pos:'Khung cửa hậu tầng trệt',st:ST.door,desc:'Contact âm khung cửa.',anchor:'contact'},
+ {id:'d6',view:'rear',cat:'door',x:238,y:270,code:'Đ6',name:'Cảm biến từ cửa sổ sau lầu 1',model:'Hikvision DS-PDMC-EG2-WB',pos:'Cửa sổ sau lầu 1',st:ST.door,desc:'Bảo vệ cửa sổ phía sau.',anchor:'contact'}
+];
+var state={mode:'sleep',view:'front',cat:'all',sel:'b1',level:0};
+function $(id){return document.getElementById(id);}
+function byId(id){for(var i=0;i<DEV.length;i++){if(DEV[i].id===id)return DEV[i];}}
+
+/* ---------- house svg ---------- */
+function rect(x,y,w,h,fill,stroke,extra){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+fill+'"'+(stroke?' stroke="'+stroke+'" stroke-width="2"':'')+(extra||'')+'/>';}
+function baseHouse(view){
+ var f=view==='front', s='';
+ s+=rect(0,440,560,60,'var(--street)');
+ s+='<text class="lbl" x="16" y="472">'+(f?'Vỉa hè và đường':'Hẻm và sân sau')+'</text>';
+ var fl=[['Sân thượng',112],['Lầu 2',196],['Lầu 1',296],['Trệt',396]];
+ for(var i=0;i<fl.length;i++)s+='<text class="lbl" x="14" y="'+fl[i][1]+'">'+fl[i][0]+'</text>';
+ s+=rect(110,140,340,300,'var(--wall)','var(--wall-line)');
+ s+='<line x1="110" y1="240" x2="450" y2="240" stroke="var(--wall-line)" stroke-width="2"/><line x1="110" y1="340" x2="450" y2="340" stroke="var(--wall-line)" stroke-width="2"/>';
+ s+=rect(120,148,320,88,'var(--room)')+rect(120,248,320,88,'var(--room)')+rect(120,348,320,88,'var(--room)');
+ /* rooftop railing + tum */
+ s+='<g stroke="var(--wall-line)" stroke-width="2" fill="none"><path d="M110 140V108H'+(f?'330':'450')+'"/><path d="M110 124H'+(f?'330':'450')+'"/><path d="M450 140V108"/></g>';
+ s+=rect(330,70,120,70,'var(--wall)','var(--wall-line)');
+ if(f){
+  s+=rect(376,92,36,48,'var(--glass)','var(--wall-line)');
+  s+=rect(200,370,60,70,'var(--glass)','var(--wall-line)');            /* cửa chính */
+  s+=rect(320,376,86,40,'var(--glass)','var(--wall-line)');            /* cửa sổ trệt */
+  s+=rect(150,266,70,50,'var(--glass)','var(--wall-line)')+rect(300,266,100,50,'var(--glass)','var(--wall-line)');
+  s+=rect(292,160,56,80,'var(--glass)','var(--wall-line)');            /* cửa ban công */
+  s+=rect(130,214,100,18,'var(--surface2)','var(--wall-line)');       /* giường */
+  s+='<text class="lbl" x="176" y="228">Giường</text>';
+  s+=rect(124,376,44,58,'var(--surface2)','var(--wall-line)');
+  /* balcony */
+  s+='<g stroke="var(--wall-line)" stroke-width="2" fill="none"><path d="M100 240H460"/><path d="M104 240V200H456V240"/><path d="M104 220H456"/></g>';
+ }else{
+  s+=rect(330,370,60,70,'var(--glass)','var(--wall-line)');            /* cửa hậu */
+  s+=rect(200,266,70,50,'var(--glass)','var(--wall-line)')+rect(300,266,70,50,'var(--glass)','var(--wall-line)');
+  s+=rect(150,166,70,50,'var(--glass)','var(--wall-line)')+rect(300,166,70,50,'var(--glass)','var(--wall-line)');
+ }
+ return s;
+}
+function devSVG(d){
+ var on=d.st[state.mode][0], cat=state.cat, dim=(cat!=='all'&&cat!==d.cat);
+ var cls='dev '+(on?'on':'off')+(dim?' dim':'')+(state.sel===d.id?' sel':'');
+ if(d.id==='sir'&&state.level===2)cls+=' alarm';
+ if(d.cat==='cam'&&state.level>=1&&state.mode!=='home')cls+=' flash';
+ var col=COL[d.cat], label=d.name+', '+MODES[state.mode]+': '+d.st[state.mode][1];
+ var g='<g class="'+cls+'" data-id="'+d.id+'" tabindex="0" role="button" aria-label="'+label+'" style="color:'+col+'">';
+ if(d.beam){
+  var b=d.beam, mx=(b[0]+b[2])/2, my=b[1];
+  g+='<line class="beam-line" x1="'+b[0]+'" y1="'+b[1]+'" x2="'+b[2]+'" y2="'+b[3]+'" stroke="'+col+'" style="'+(on?'':'opacity:.5;stroke-dasharray:2 8')+'"/>';
+  g+='<line x1="'+b[0]+'" y1="'+b[1]+'" x2="'+b[2]+'" y2="'+b[3]+'" stroke="transparent" stroke-width="22"/>';
+  g+=rect(b[0]-8,b[1]-9,10,18,col,null)+rect(b[2]-2,b[3]-9,10,18,col,null);
+  g+='<text class="code" x="'+(b[0]-3)+'" y="'+(b[1]-13)+'" fill="var(--ink2)" text-anchor="middle">Tx</text><text class="code" x="'+(b[2]+3)+'" y="'+(b[3]-13)+'" fill="var(--ink2)" text-anchor="middle">Rx</text>';
+  g+='<circle class="ring" cx="'+mx+'" cy="'+my+'" r="17"/><circle cx="'+mx+'" cy="'+my+'" r="13" fill="'+col+'" stroke="var(--surface)" stroke-width="2"/><text class="code" x="'+mx+'" y="'+(my+3.5)+'" text-anchor="middle" fill="#0b0b0b">'+d.code+'</text>';
+ }else{
+  var dark=(d.cat==='cam'||d.cat==='door')?'#fff':'#0b0b0b';
+  if(d.cat==='door')dark='#0b0b0b';
+  var r=d.code.length>2?15:13;
+  g+='<circle class="ring" cx="'+d.x+'" cy="'+d.y+'" r="'+(r+5)+'"/><circle cx="'+d.x+'" cy="'+d.y+'" r="'+r+'" fill="'+col+'" stroke="var(--surface)" stroke-width="2"/><text class="code" x="'+d.x+'" y="'+(d.y+3.5)+'" text-anchor="middle" fill="'+dark+'">'+d.code+'</text>';
+ }
+ return g+'</g>';
+}
+function renderHouse(){
+ var v=state.view, s='<svg class="house" viewBox="0 46 560 454" role="group" aria-label="Sơ đồ ngôi nhà, '+(v==='front'?'mặt tiền':'mặt sau')+'">'+baseHouse(v);
+ var i,d;
+ for(i=0;i<DEV.length;i++){d=DEV[i];if(d.view===v&&d.fov)s+='<polygon class="fov'+(d.st[state.mode][0]?'':' off')+'" points="'+d.fov+'"/>';}
+ for(i=0;i<DEV.length;i++){d=DEV[i];if(d.view===v)s+=devSVG(d);}
+ s+='</svg>';
+ $('houseMount').innerHTML=s;
+}
+function renderLegend(){
+ var h='';['cam','beam','door','btn','hub'].forEach(function(k){h+='<span><i class="dot" style="background:'+COL[k]+'"></i>'+CATNAME[k]+'</span>';});
+ h+='<span>Vòng sáng = đang canh; mờ = đang tắt ở chế độ này</span>';
+ $('houseLegend').innerHTML=h;
+}
+function renderDetail(){
+ var d=byId(state.sel); if(!d){$('detail').innerHTML='';return;}
+ var st=d.st[state.mode];
+ $('detail').innerHTML='<div class="eyebrow">'+CATNAME[d.cat]+'</div><h3>'+d.code+' · '+d.name+'</h3><div class="meta">'+d.model+'</div>'
+ +'<dl class="kv"><dt>Vị trí</dt><dd>'+d.pos+'</dd><dt>Chế độ '+MODES[state.mode]+'</dt><dd><span class="badge '+(st[0]?'ok':'')+'">'+(st[0]?'Đang hoạt động':'Đang tắt')+'</span> '+st[1]+'</dd></dl>'
+ +'<p style="margin:12px 0">'+d.desc+'</p><a class="btn small" href="tinh-nang.html#'+d.anchor+'">Xem tính năng chi tiết</a>';
+}
+function renderTable(){
+ var b='';
+ DEV.forEach(function(d){var st=d.st[state.mode];
+  b+='<tr data-dev="'+d.id+'" class="'+(state.sel===d.id?'sel':'')+'" tabindex="0"><td><i class="dot" style="background:'+COL[d.cat]+'"></i><b>'+d.code+'</b> '+d.name+'</td><td>'+(d.view==='front'?'Mặt tiền':'Mặt sau')+': '+d.pos+'</td><td><span class="badge '+(st[0]?'ok':'')+'">'+(st[0]?'Canh':'Tắt')+'</span> '+st[1]+'</td></tr>';});
+ document.querySelector('#devTable tbody').innerHTML=b;
+}
+function renderChips(){
+ var h='';CATS.forEach(function(c){h+='<button type="button" class="chip" data-cat="'+c[0]+'" aria-pressed="'+(state.cat===c[0])+'">'+c[1]+'</button>';});
+ $('catChips').innerHTML=h;
+}
+function setPressed(seg,attr,val){[].forEach.call(seg.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.getAttribute(attr)===val);});}
+function renderAll(){
+ setPressed($('modeSeg'),'data-mode',state.mode);setPressed($('viewSeg'),'data-view',state.view);
+ renderChips();renderHouse();renderDetail();renderTable();
+ $('simMode').textContent=MODES[state.mode];
+}
+function select(id){var d=byId(id);if(!d)return;state.sel=id;if(d.view!==state.view)state.view=d.view;renderAll();}
+$('modeSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;state.mode=b.getAttribute('data-mode');simResetSoft();renderAll();});
+$('viewSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;state.view=b.getAttribute('data-view');renderAll();});
+$('catChips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;state.cat=b.getAttribute('data-cat');renderAll();});
+$('houseMount').addEventListener('click',function(e){var g=e.target.closest('.dev');if(g)select(g.getAttribute('data-id'));});
+$('houseMount').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){var g=e.target.closest('.dev');if(g){e.preventDefault();select(g.getAttribute('data-id'));}}});
+document.querySelector('#devTable tbody').addEventListener('click',function(e){var r=e.target.closest('tr');if(r)select(r.getAttribute('data-dev'));});
+document.querySelector('#devTable tbody').addEventListener('keydown',function(e){if(e.key==='Enter'){var r=e.target.closest('tr');if(r)select(r.getAttribute('data-dev'));}});
+
+/* ---------- simulation ---------- */
+var EVENTS=[
+ {k:'beam',t:'Beam ban công bị chặn (cả 2 tia)',src:'beam'},
+ {k:'cam',t:'Camera thấy người vào vùng hàng rào ảo',src:'cam'},
+ {k:'door',t:'Cửa ban công bị mở',src:'door'},
+ {k:'cat',t:'Mèo đi ngang beam (chặn 1 tia)',warn:1},
+ {k:'sun',t:'Nắng chiếu thẳng vào beam lúc hoàng hôn',warn:1},
+ {k:'owner',t:'Chủ nhà dậy đêm, mở cửa phòng, xuống bếp',warn:1},
+ {k:'disarm',t:'Bấm remote tắt báo động',warn:1}
+];
+var sim={t:0,log:[],srcs:[]};
+function fmt(t){return 'T+'+t+'s';}
+function logLine(text){sim.log.push({t:sim.t,text:text});}
+function simResetSoft(){sim={t:0,log:[],srcs:[]};state.level=0;renderSim();}
+function simEvent(k){
+ var mode=state.mode, e=EVENTS.filter(function(x){return x.k===k;})[0], lvl=state.level, note='';
+ if(sim.log.length)sim.t+=10;
+ if(k==='disarm'){state.level=0;sim.srcs=[];logLine('Bấm remote: tắt còi, ghi nhận sự kiện, hệ thống trở lại bình thường.');renderSim();renderAll();return;}
+ if(mode==='home'){
+  note=(k==='cat'||k==='owner')?'Ở nhà: không có gì xảy ra, đây là sinh hoạt bình thường.':'Ở nhà: hệ thống chỉ ghi hình và đẩy ảnh về điện thoại, không hú còi.';
+  logLine(e.t+' → '+note);renderSim();return;
+ }
+ if(k==='cat'){note='Không báo. Beam cần chặn đồng thời 2 tia và vượt độ trễ, mèo chỉ chặn 1 tia trong chốc lát.';}
+ else if(k==='sun'){lvl=Math.max(lvl,1);note='Cấp 1, gắn nhãn nghi báo giả: chỉ đẩy ảnh, không hú. Ghi lại giờ để chỉnh hướng hoặc che nắng.';}
+ else if(k==='owner'){
+  if(mode==='sleep')note='Không báo. Chế độ Đi ngủ không canh cửa nội bộ và cảm biến trong nhà.';
+  else{lvl=Math.max(lvl,1);sim.srcs.push({s:'pir',t:sim.t});note='Cấp 1: cảm biến trong nhà thấy người khi đang Vắng nhà, đẩy ảnh về điện thoại.';}
+ }else if(k==='door'){
+  lvl=2;sim.srcs.push({s:'door',t:sim.t});note='Cấp 2 ngay: cửa mở khi đang canh. Cửa chính có trễ vào 20-30 giây để tắt bằng remote, cửa ban công và sân thượng báo ngay.';
+ }else{
+  lvl=Math.max(lvl,1);
+  var other=sim.srcs.filter(function(x){return x.s!==e.src&&sim.t-x.t<=60;}).length>0;
+  sim.srcs.push({s:e.src,t:sim.t});
+  if(other){lvl=2;note='Cấp 2: hai bằng chứng độc lập trong vòng 60 giây (beam, camera hoặc cửa). Còi trong nhà hú.';}
+  else note='Cấp 1: chỉ có một bằng chứng. Camera nháy đèn, phát lời cảnh báo tại chỗ và đẩy ảnh về điện thoại. Còi trong nhà chưa hú.';
+ }
+ state.level=lvl;logLine(e.t+' → '+note);renderSim();renderAll();
+}
+function renderSim(){
+ $('evList').innerHTML=EVENTS.map(function(e){return '<button type="button" data-k="'+e.k+'" class="'+(e.warn?'warn-ev':'')+'">'+e.t+'</button>';}).join('');
+ var l=state.level;[].forEach.call(document.querySelectorAll('#levels .lv'),function(n){n.className='lv l'+n.getAttribute('data-l')+(Number(n.getAttribute('data-l'))===l?' act':'');});
+ $('simLog').innerHTML=sim.log.length?sim.log.map(function(x){return '<li><time>'+fmt(x.t)+'</time><span>'+x.text+'</span></li>';}).join(''):'<li><time>T+0s</time><span>Hệ thống đang canh ở chế độ '+MODES[state.mode]+'. Bấm một sự kiện để bắt đầu.</span></li>';
+ var txt=['Bình thường: chỉ ghi hình.','Cấp 1: cảnh báo tại chỗ bằng đèn, lời nói của camera và ảnh gửi về điện thoại. Chưa hú còi.','Cấp 2: còi trong nhà hú tối đa 60 giây rồi tự ngắt, gọi hoặc nhắn tin cho các số đã cài. Nếu sự kiện còn kéo dài sau 5 phút thì lặp tối đa 2 lần rồi chỉ nhắn tin.'];
+ $('simText').textContent=txt[l];
+ var p='';
+ if(l===0)p='<div class="push"><b>Hik-Connect</b>Không có cảnh báo. Hệ thống đang '+(state.mode==='home'?'ở chế độ Ở nhà':'canh ở chế độ '+MODES[state.mode])+'.</div>';
+ if(l>=1)p+='<div class="push l1"><b>Cảnh báo cấp 1 · kèm ảnh</b>Phát hiện người ở khu vực ban công. Camera đã phát lời cảnh báo.</div>';
+ if(l>=2)p='<div class="push l2"><b>BÁO ĐỘNG cấp 2</b>Xác nhận hai bằng chứng. Còi trong nhà đang hú. Xem ảnh và gọi cho người thân.</div>'+p;
+ $('phoneMount').innerHTML=p;
+}
+$('evList').addEventListener('click',function(e){var b=e.target.closest('button');if(b)simEvent(b.getAttribute('data-k'));});
+$('simReset').addEventListener('click',function(){simResetSoft();renderAll();});
+
+/* ---------- chart ---------- */
+var GROUPS=[
+ {n:'Camera AI + NVR',v:[25.14,34.78,34.78],c:'var(--c1)'},
+ {n:'Hàng rào hồng ngoại',v:[6.82,7.70,11.17],c:'var(--c2)'},
+ {n:'Nút đầu giường, cảm biến từ, trung tâm',v:[7.34,11.84,20.66],c:'var(--c3)'},
+ {n:'Vật tư đi dây âm',v:[5.73,6.90,7.83],c:'var(--c4)'},
+ {n:'Nhân công, cấu hình, nghiệm thu',v:[6.20,7.46,8.90],c:'var(--c5)'}
+];
+var PK=['Tiết kiệm','Chuẩn','Nâng cao'];
+var TOTAL=[51.234,68.676,83.344];
+function vn(x,d){return x.toFixed(d===undefined?1:d).replace('.',',');}
+function renderLegendRow(){$('chartLegend').innerHTML=GROUPS.map(function(g){return '<span><i class="sw" style="background:'+g.c+'"></i>'+g.n+'</span>';}).join('');}
+var tblMode=false;
+function renderChart(){
+ var h='';
+ if(!tblMode){
+  var max=90;
+  h+='<div class="rows"><div class="gridlines">';
+  [0,20,40,60,80].forEach(function(t){h+='<i style="left:'+(t/max*100)+'%"></i><em style="left:'+(t/max*100)+'%">'+t+'</em>';});
+  h+='</div>';
+  for(var p=0;p<3;p++){
+   h+='<div class="row"><div class="name">'+PK[p]+(p===1?'<small>khuyến nghị</small>':'')+'</div><div class="track">';
+   GROUPS.forEach(function(g,gi){h+='<div class="seg-bar" tabindex="0" data-p="'+p+'" data-g="'+gi+'" style="--col:'+g.c+';width:'+(g.v[p]/max*100)+'%" aria-label="'+PK[p]+', '+g.n+': '+vn(g.v[p],2)+' triệu đồng"></div>';});
+   h+='</div><div class="total">'+vn(TOTAL[p])+' tr</div></div>';
+  }
+  h+='</div><div class="axis-cap">triệu đồng, chưa VAT</div>';
+ }else{
+  h+='<div class="scroll-x"><table class="tbl"><thead><tr><th>Hạng mục</th>'+PK.map(function(x){return '<th>'+x+'</th>';}).join('')+'</tr></thead><tbody>';
+  GROUPS.forEach(function(g){h+='<tr><td><i class="sw" style="display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;background:'+g.c+'"></i>'+g.n+'</td>'+g.v.map(function(x){return '<td>'+vn(x,2)+'</td>';}).join('')+'</tr>';});
+  h+='<tr><td><b>Tổng (triệu đồng)</b></td>'+TOTAL.map(function(x){return '<td><b>'+vn(x,2)+'</b></td>';}).join('')+'</tr></tbody></table></div>';
+ }
+ $('chartView').innerHTML=h;
+}
+var tip=$('tip'),card=$('chartCard');
+function showTip(t,ev){
+ var g=GROUPS[t.getAttribute('data-g')],p=t.getAttribute('data-p'),r=card.getBoundingClientRect(),b=t.getBoundingClientRect();
+ tip.innerHTML='<b>'+g.n+'</b><br>'+PK[p]+': '+vn(g.v[p],2)+' triệu đồng';
+ var x=(ev&&ev.clientX?ev.clientX:b.left+b.width/2)-r.left, y=b.top-r.top-8;
+ tip.style.left=Math.max(8,Math.min(x-60,r.width-190))+'px';tip.style.top=(y-46)+'px';tip.classList.add('show');
+}
+$('chartView').addEventListener('mousemove',function(e){var t=e.target.closest('.seg-bar');if(t)showTip(t,e);else tip.classList.remove('show');});
+$('chartView').addEventListener('mouseleave',function(){tip.classList.remove('show');});
+$('chartView').addEventListener('focusin',function(e){var t=e.target.closest('.seg-bar');if(t)showTip(t);});
+$('chartView').addEventListener('focusout',function(){tip.classList.remove('show');});
+$('tblToggle').addEventListener('click',function(){tblMode=!tblMode;this.setAttribute('aria-pressed',tblMode);this.textContent=tblMode?'Xem dạng biểu đồ':'Xem dạng bảng';renderChart();});
+
+var PKG=[
+ {n:'Tiết kiệm',p:'51,2 triệu',s:'Nhà nhỏ, ngân sách hạn chế',l:['4 camera 4MP AcuSense, NVR 8 kênh, ổ 2TB','2 beam 4 tia ABH-150L','Bộ AX PRO và 2 cảm biến từ thêm (tổng 3 cửa)','Dùng remote trong bộ làm nút Đi ngủ','Không UPS, không còi rời']},
+ {n:'Chuẩn',p:'68,7 triệu',s:'Khuyến nghị cho căn nhà này',rec:1,l:['5 camera, NVR 8 kênh, ổ 4TB, switch PoE từ 120W, UPS','2 beam Takex PBS-15T chống trèo','Bộ AX PRO và 5 cảm biến từ thêm (tổng 6 cửa)','Nút khẩn cấp và còi trong nhà','Cấu hình 3 chế độ, chạy thử 14 ngày']},
+ {n:'Nâng cao',p:'83,3 triệu',s:'Nhà nhiều tầng, cần chống báo giả tối đa',l:['Như gói Chuẩn, thêm tuyến beam thứ 3','8 cửa có cảm biến, 2 nút khẩn cấp','PIR có camera xác minh hình ảnh','Bàn phím, remote thứ 2, còi thứ 2','Bảo trì ưu tiên']}
+];
+$('pkgCards').innerHTML=PKG.map(function(k){return '<div class="card pkg'+(k.rec?' rec':'')+'">'+(k.rec?'<span class="badge ok">Khuyến nghị</span>':'')+'<h3>'+k.n+'</h3><div class="price">'+k.p+'</div><div class="sub">'+k.s+' · chưa VAT</div><ul>'+k.l.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul></div>';}).join('');
+
+renderLegend();renderLegendRow();renderChart();renderSim();renderAll();
+})();
+</script>
+</body>
+</html>

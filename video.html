@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video hướng dẫn | An ninh thông minh nhà phố BMT</title>
+<meta name="description" content="Thư viện video hướng dẫn cài đặt AX PRO, camera AcuSense, beam hồng ngoại, remote cho giải pháp an ninh nhà phố.">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f6f3; --surface:#fcfcfb; --surface2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --line:#e1e0d9; --line2:#c3c2b7; --accent:#0A1172; --accent-ink:#ffffff; --link:#0A1172;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4;
+  --good:#0ca30c; --good-ink:#006300; --warn:#fab219; --warn-ink:#7a4f00; --crit:#d03b3b; --crit-ink:#a32323;
+  --wall:#efeee9; --wall-line:#a9a89e; --room:#fbfbf9; --street:#dcdbd3; --glass:#cfe0f5; --tag-bg:#e9eafc;
+  --shadow:0 1px 2px rgba(11,11,11,.06), 0 8px 24px rgba(11,11,11,.06);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--link)}
+img{max-width:100%}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:650;letter-spacing:-.01em}
+h1{font-size:clamp(1.9rem,4.6vw,3rem)}
+h2{font-size:clamp(1.4rem,3vw,1.9rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 1em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--c1);outline-offset:2px;border-radius:4px}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:#0A1172;color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.site-header .wrap{display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;margin-right:auto}
+.brand .logo{height:40px;width:auto;border-radius:6px;display:block}
+.logo-fallback{display:none;place-items:center;width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#e7e9f5,#9aa1c9);color:#0A1172;font-weight:800;font-size:.8rem;letter-spacing:.02em}
+.brand-text{display:flex;flex-direction:column;font-weight:700;line-height:1.15}
+.brand-text small{font-weight:400;font-size:.72rem;color:#c8cbe8}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:#dfe1f5;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:.95rem}
+.nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav a[aria-current="page"]{background:#fff;color:#0A1172;font-weight:650}
+.theme-btn{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:6px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+.theme-btn:hover{background:rgba(255,255,255,.12)}
+
+/* generic blocks */
+section.block{padding:44px 0 8px}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);font-weight:650;margin-bottom:6px}
+.lead{font-size:1.08rem;color:var(--ink2);max-width:68ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:#0A1172;color:#fff;border-color:#0A1172}
+.btn.primary:hover{background:#1520a3}
+.btn.small{padding:6px 10px;font-size:.88rem;font-weight:550}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:650;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2);background:var(--surface2)}
+.badge.ok{color:var(--good-ink);border-color:var(--good)}
+.badge.todo{color:var(--warn-ink);border-color:var(--warn)}
+.badge.crit{color:var(--crit-ink);border-color:var(--crit)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:#0A1172;color:#fff;border-color:#0A1172}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--ink);padding:9px 15px;font:inherit;font-weight:600;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:#0A1172;color:#fff}
+table.tbl{width:100%;border-collapse:collapse;font-size:.93rem}
+.tbl th,.tbl td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.tbl tr[data-dev]{cursor:pointer}
+.tbl tr[data-dev]:hover td{background:var(--surface2)}
+.tbl tr.sel td{background:var(--tag-bg)}
+.scroll-x{overflow-x:auto}
+.note{border-left:4px solid var(--warn);background:var(--surface2);padding:10px 14px;border-radius:0 10px 10px 0;font-size:.93rem;color:var(--ink2)}
+.note.info{border-left-color:var(--c1)}
+.note strong{color:var(--ink)}
+.hero{background:linear-gradient(160deg,#0A1172 0%,#141e9a 60%,#2b36b8 100%);color:#fff;padding:52px 0 40px}
+.hero h1{margin-bottom:.35em}
+.hero .lead{color:#dfe1f5}
+.hero .btn{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);color:#fff}
+.hero .btn.primary{background:#fff;color:#0A1172;border-color:#fff}
+.hero .btn:hover{background:rgba(255,255,255,.18)}
+.hero .btn.primary:hover{background:#eceefb}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px}
+.tile b{display:block;font-size:2rem;line-height:1.1}
+.tile span{font-size:.88rem;color:#dfe1f5}
+.crumbs{font-size:.9rem;color:var(--ink2);margin:20px 0 6px}
+.footer{margin-top:56px;background:#0A1172;color:#dfe1f5;padding:28px 0;font-size:.92rem}
+.footer a{color:#fff}
+.footer .cols{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between}
+.pill-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0;font-size:.93rem}
+.kv dt{color:var(--ink2)}
+.kv dd{margin:0}
+@media (max-width:520px){.kv{grid-template-columns:1fr}.kv dt{font-weight:650}}
+@media print{.site-header,.theme-btn,.footer{display:none}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.hero.slim{padding:34px 0 26px}
+.tools{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin:22px 0 4px}
+.search{flex:1;min-width:220px;max-width:420px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 13px;font:inherit}
+.vgroup{margin-top:34px;scroll-margin-top:84px}
+.vgroup h2{margin-bottom:4px}
+.vgroup .sub{color:var(--ink2);margin:0 0 12px;max-width:70ch}
+.vgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:760px){.vgrid{grid-template-columns:1fr}}
+.vcard{display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.vcard:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.play{flex:none;width:44px;height:44px;border-radius:12px;background:#0A1172;display:grid;place-items:center}
+.play svg{display:block}
+.vcard b{display:block;font-weight:600;line-height:1.35}
+.vcard small{display:block;color:var(--ink2);margin-top:3px}
+.lang{display:inline-block;font-size:.72rem;font-weight:700;border:1px solid var(--line2);border-radius:6px;padding:0 6px;margin-right:6px;color:var(--ink2)}
+.moreq{margin-top:10px;font-size:.92rem}
+.none{display:none;color:var(--ink2);padding:18px 0}
+</style>
+</head>
+<body>
+
+<header class="site-header"><div class="wrap">
+  <a class="brand" href="index.html" aria-label="STC CROP - trang chủ">
+    <img class="logo" src="stc-crop-logo.jpg" alt="STC CROP" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+    <span class="logo-fallback" aria-hidden="true">STC</span>
+    <span class="brand-text">STC CROP<small>An ninh thông minh nhà phố</small></span>
+  </a>
+  <nav class="nav" aria-label="Điều hướng chính"><a href="index.html">Tổng quan</a><a href="tinh-nang.html">Tính năng chi tiết</a><a href="cai-dat.html">Cài đặt & hướng dẫn</a><a href="video.html" aria-current="page">Video</a></nav>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Đổi giao diện sáng/tối">Sáng / Tối</button>
+</div></header>
+
+<section class="hero slim"><div class="wrap">
+  <div class="eyebrow" style="color:#c8cbe8">Thư viện video</div>
+  <h1>35 video hướng dẫn theo từng bước</h1>
+  <p class="lead">Gom theo chủ đề, khớp với các bước ở trang Cài đặt. Có bộ lọc theo ngôn ngữ và ô tìm kiếm.</p>
+</div></section>
+<div class="wrap">
+  <p class="note" style="margin-top:22px"><strong>Trước khi gửi khách:</strong> đây là video của bên thứ ba, được chọn theo tiêu đề trong kết quả tìm kiếm. STC chưa xem hết từng video, nên hãy xem trước để chắc nội dung đúng model và không chứa thông tin gây nhầm. Video có thể bị gỡ hoặc đổi. Nhiều video dùng model hoặc giao diện khác ít nhiều, nên nguyên tắc chung vẫn áp dụng được nhưng tên menu có thể khác.</p>
+  <div class="tools" role="search">
+    <input class="search" id="q" type="search" placeholder="Tìm theo tiêu đề, ví dụ: beam, keyfob, line crossing" aria-label="Tìm video">
+    <div class="chips" id="langChips"><button class="chip" type="button" data-l="all" aria-pressed="true">Tất cả ngôn ngữ</button><button class="chip" type="button" data-l="vi" aria-pressed="false">Tiếng Việt</button><button class="chip" type="button" data-l="en" aria-pressed="false">English</button><button class="chip" type="button" data-l="fr" aria-pressed="false">Français</button><button class="chip" type="button" data-l="pt" aria-pressed="false">Português</button></div>
+  </div>
+  <p class="plabel" id="count" role="status" aria-live="polite" style="color:var(--ink2)"></p>
+  
+<section class="vgroup" id="nhom-tong-quan" data-group>
+  <h2>Tổng quan và mở hộp AX PRO</h2>
+  <p class="sub">Xem để hiểu bộ thiết bị gồm những gì, ghép và vận hành ra sao trước khi đi khảo sát.</p>
+  <div class="vgrid"><a class="vcard" href="https://www.youtube.com/watch?v=3IZhVCd5jXc" target="_blank" rel="noopener" data-lang="vi" data-t="cài đặt tủ trung tâm báo động hikvision - từ a đến z tổng quan và mở hộp ax pro tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Cài đặt tủ Trung tâm báo động Hikvision - từ A đến Z</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=i3M-vEiyXUQ" target="_blank" rel="noopener" data-lang="en" data-t="hikvision ax pro wireless intruder system: full range unboxing, set up and demo tổng quan và mở hộp ax pro english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hikvision AX Pro Wireless Intruder System: Full Range Unboxing, Set Up and Demo</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=UMVIxXFm1mY" target="_blank" rel="noopener" data-lang="en" data-t="hikvision ax pro wireless alarm tổng quan và mở hộp ax pro english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>HIKvision AX Pro Wireless Alarm</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a></div>
+  <p class="moreq"><a href="https://www.youtube.com/results?search_query=Hikvision+AX+PRO+t%E1%BB%95ng+quan+thi%E1%BA%BFt+b%E1%BB%8B" target="_blank" rel="noopener">Tìm thêm trên YouTube: Hikvision AX PRO tổng quan thiết bị</a></p>
+</section>
+<section class="vgroup" id="nhom-ax-pro" data-group>
+  <h2>Cài đặt AX PRO trên Hik-Connect</h2>
+  <p class="sub">Thêm trung tâm, ghép cảm biến, đặt vùng và khu vực. Phục vụ bước 4 trong trang Cài đặt.</p>
+  <div class="vgrid"><a class="vcard" href="https://www.youtube.com/watch?v=Hb1SSow55_E" target="_blank" rel="noopener" data-lang="en" data-t="hikvision ax pro alarm initial setup &amp; configuration guide cài đặt ax pro trên hik-connect english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hikvision AX Pro Alarm Initial Setup &amp; Configuration Guide</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=qZrmNpFIDPQ" target="_blank" rel="noopener" data-lang="en" data-t="unboxing &amp; setup hikvision ax pro alarm system cài đặt ax pro trên hik-connect english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Unboxing &amp; Setup Hikvision AX Pro Alarm System</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=6M5svHv_72M" target="_blank" rel="noopener" data-lang="en" data-t="how to setup hikvision ax pro alarm 2024 ? cài đặt ax pro trên hik-connect english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>HOW TO SETUP HIKVISION AX PRO ALARM 2024 ?</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=2fW1VUnqA3k" target="_blank" rel="noopener" data-lang="en" data-t="how to add devices, detectors, contacts, keyfob to hikvision ds-pwa32-kg alarm ax hub kit cài đặt ax pro trên hik-connect english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How To Add Devices, Detectors, Contacts, Keyfob to Hikvision DS-PWA32-KG Alarm AX Hub Kit</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=rRBrk2yYkVQ" target="_blank" rel="noopener" data-lang="en" data-t="how to setup the hikvision axpro m2h alarm panel cài đặt ax pro trên hik-connect english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to setup the Hikvision AXPRO M2H Alarm Panel</b><small><span class="lang">English</span>YouTube, mở tab mới</small><small>Dòng M2H, khác dòng kit không dây, chỉ để tham khảo giao diện</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=g8TFvCMmqgg" target="_blank" rel="noopener" data-lang="fr" data-t="hikvision france | connecter et configurer vos périphériques ax pro cài đặt ax pro trên hik-connect français"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hikvision France | Connecter et configurer vos périphériques AX PRO</b><small><span class="lang">Français</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=XaHXLaw6NK4" target="_blank" rel="noopener" data-lang="pt" data-t="instalação completa do sistema de alarme ax-pro hikvision – guia passo a passo! cài đặt ax pro trên hik-connect português"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Instalação Completa do Sistema de Alarme AX-PRO Hikvision – Guia Passo a Passo!</b><small><span class="lang">Português</span>YouTube, mở tab mới</small></span></a></div>
+  <p class="moreq"><a href="https://www.youtube.com/results?search_query=Hikvision+AX+PRO+Hik-Connect+setup" target="_blank" rel="noopener">Tìm thêm trên YouTube: Hikvision AX PRO Hik-Connect setup</a></p>
+</section>
+<section class="vgroup" id="nhom-viet" data-group>
+  <h2>Hướng dẫn tiếng Việt: báo động và đầu ghi Hikvision</h2>
+  <p class="sub">Video của các đơn vị trong nước, dễ theo dõi nếu đội thi công mới làm quen.</p>
+  <div class="vgrid"><a class="vcard" href="https://www.youtube.com/watch?v=bkcGsvWdbus" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn cài đặt báo động không dây hikvision ds-pwa32-kst hướng dẫn tiếng việt: báo động và đầu ghi hikvision tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>HƯỚNG DẪN CÀI ĐẶT BÁO ĐỘNG KHÔNG DÂY HIKVISION DS-PWA32-KST</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=OpRSjmVkerw" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn cài đặt đầu ghi và camera hikvision hướng dẫn tiếng việt: báo động và đầu ghi hikvision tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>HƯỚNG DẪN CÀI ĐẶT ĐẦU GHI VÀ CAMERA HIKVISION</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=AClGTLmukyo" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn cấu hình báo động đầu ghi hikvision &amp; kết nối ra loa hướng dẫn tiếng việt: báo động và đầu ghi hikvision tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hướng dẫn cấu hình báo động đầu ghi Hikvision &amp; Kết nối ra loa</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=2TTm193SdBs" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn cài đặt camera hikvision báo động qua email | phần 2 hướng dẫn tiếng việt: báo động và đầu ghi hikvision tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>HƯỚNG DẪN CÀI ĐẶT CAMERA HIKVISION BÁO ĐỘNG QUA EMAIL | PHẦN 2</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a></div>
+  <p class="moreq"><a href="https://www.youtube.com/results?search_query=h%C6%B0%E1%BB%9Bng+d%E1%BA%ABn+c%C3%A0i+%C4%91%E1%BA%B7t+b%C3%A1o+%C4%91%E1%BB%99ng+kh%C3%B4ng+d%C3%A2y+Hikvision+ti%E1%BA%BFng+Vi%E1%BB%87t" target="_blank" rel="noopener">Tìm thêm trên YouTube: hướng dẫn cài đặt báo động không dây Hikvision tiếng Việt</a></p>
+</section>
+<section class="vgroup" id="nhom-camera" data-group>
+  <h2>Camera AcuSense: vượt hàng rào ảo và xâm nhập vùng</h2>
+  <p class="sub">Cách vẽ vùng và chọn đối tượng Người, Xe để lọc lá cây và côn trùng. Phục vụ bước 3.</p>
+  <div class="vgrid"><a class="vcard" href="https://www.youtube.com/watch?v=gvv-U7JxTko" target="_blank" rel="noopener" data-lang="en" data-t="line crossing detection and intrusion detection in a hikvision nvr. cctv configuration camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Line crossing detection and intrusion detection in a Hikvision NVR. CCTV CONFIGURATION</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=3sjszlZl0_s" target="_blank" rel="noopener" data-lang="en" data-t="line crossing and intrusion detection setup and demonstration on hikvision cctv gui 4 camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Line crossing and intrusion detection setup and demonstration on Hikvision CCTV GUI 4</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=cBxsvON3iOo" target="_blank" rel="noopener" data-lang="en" data-t="hikvision acusense line crossing detection human body setup ids-7216 (deep learning) camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hikvision Acusense Line Crossing Detection Human Body Setup IDS-7216 (Deep Learning)</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=-wQwqGAbPmc" target="_blank" rel="noopener" data-lang="en" data-t="how to create an accurate intrusion detection event camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to create an accurate intrusion detection event</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=3Y224XmtV9s" target="_blank" rel="noopener" data-lang="en" data-t="hikvision intrusion detection (set-up) camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hikvision Intrusion Detection (set-up)</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=aUnRj37OBcg" target="_blank" rel="noopener" data-lang="en" data-t="hikvision 3rd generation acusense dvr intrusion detection set-up for human and vehicle recognition camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hikvision 3rd Generation Acusense DVR Intrusion Detection Set-up for Human and Vehicle Recognition</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=2w5kPQajFvQ" target="_blank" rel="noopener" data-lang="en" data-t="hikvision line crossing detection setup and send photos and notification to email address camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>hikvision line crossing detection setup and send photos and notification to email address</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=SBRIYje4v_U" target="_blank" rel="noopener" data-lang="en" data-t="how to setup line crossing detection on a hikvision ip camera web interface camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to setup line crossing detection on a Hikvision IP Camera web interface</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=w9bQtmIc23k" target="_blank" rel="noopener" data-lang="en" data-t="how to setup hikvision intrusion detection (virtual host) new camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How To Setup HikVision Intrusion Detection (Virtual Host) NEW</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=Su-NsHujWq4" target="_blank" rel="noopener" data-lang="en" data-t="how to set up line crossing hikvision camera acusense: vượt hàng rào ảo và xâm nhập vùng english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to Set up Line Crossing Hikvision</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a></div>
+  <p class="moreq"><a href="https://www.youtube.com/results?search_query=Hikvision+AcuSense+line+crossing+intrusion+detection+setup" target="_blank" rel="noopener">Tìm thêm trên YouTube: Hikvision AcuSense line crossing intrusion detection setup</a></p>
+</section>
+<section class="vgroup" id="nhom-lien-ket" data-group>
+  <h2>Liên kết AX PRO với camera IP</h2>
+  <p class="sub">Đây là điểm cần thử trên thiết bị thật (xác nhận chéo giữa báo động và camera). Xem để biết phần nào làm được.</p>
+  <div class="vgrid"><a class="vcard" href="https://www.youtube.com/watch?v=3-75XBmoH9U" target="_blank" rel="noopener" data-lang="en" data-t="how to configure and apply the linkage between ax pro alarm systems and ip cameras liên kết ax pro với camera ip english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to Configure and Apply the Linkage between AX PRO Alarm Systems and IP Cameras</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a></div>
+  <p class="moreq"><a href="https://www.youtube.com/results?search_query=Hikvision+AX+PRO+linkage+IP+camera" target="_blank" rel="noopener">Tìm thêm trên YouTube: Hikvision AX PRO linkage IP camera</a></p>
+</section>
+<section class="vgroup" id="nhom-beam" data-group>
+  <h2>Lắp và căn chỉnh beam hàng rào hồng ngoại</h2>
+  <p class="sub">Video của đơn vị trong nước về beam chống trộm. Phục vụ bước 5. Với module DS-PM-WI1, đối chiếu thêm tài liệu Hikvision.</p>
+  <div class="vgrid"><a class="vcard" href="https://www.youtube.com/watch?v=hmYNH1MMMCY" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn lắp bộ hàng rào hồng ngoại chống trộm gửi thông báo về điện thoại | điện tử dat lắp và căn chỉnh beam hàng rào hồng ngoại tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hướng Dẫn Lắp Bộ Hàng Rào Hồng Ngoại Chống Trộm gửi Thông Báo về Điện Thoại | Điện tử DAT</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=FjGsWjqLWLs" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn lắp bộ hàng rào chống trộm hồng ngoại 1 tia | vdo00041 | điện tử dat lắp và căn chỉnh beam hàng rào hồng ngoại tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hướng Dẫn Lắp Bộ Hàng Rào Chống Trộm Hồng Ngoại 1 Tia | VDO00041 | Điện tử DAT</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=I19EVgYI9W4" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn lắp hàng rào chống trộm lên trụ sắt cho bất kỳ loại beam hàng rào nào | capitech lắp và căn chỉnh beam hàng rào hồng ngoại tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hướng Dẫn Lắp Hàng Rào Chống Trộm Lên Trụ Sắt Cho Bất Kỳ Loại Beam Hàng Rào Nào | CAPITECH</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=OCAbMF6ZgnY" target="_blank" rel="noopener" data-lang="vi" data-t="hướng dẫn lắp hàng rào chống trộm truyền tín hiệu từ xa | điện tử dat lắp và căn chỉnh beam hàng rào hồng ngoại tiếng việt"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hướng Dẫn Lắp Hàng Rào Chống Trộm Truyền Tín Hiệu Từ Xa | Điện tử DAT</b><small><span class="lang">Tiếng Việt</span>YouTube, mở tab mới</small></span></a></div>
+  <p class="moreq"><a href="https://www.youtube.com/results?search_query=h%C6%B0%E1%BB%9Bng+d%E1%BA%ABn+l%E1%BA%AFp+c%C4%83n+ch%E1%BB%89nh+beam+h%C3%A0ng+r%C3%A0o+h%E1%BB%93ng+ngo%E1%BA%A1i+Takex" target="_blank" rel="noopener">Tìm thêm trên YouTube: hướng dẫn lắp căn chỉnh beam hàng rào hồng ngoại Takex</a></p>
+</section>
+<section class="vgroup" id="nhom-remote" data-group>
+  <h2>Remote, keyfob và bàn phím: bật, tắt, chế độ Stay</h2>
+  <p class="sub">Để thử điểm chưa xác minh: nút nào trên remote gán được vào chế độ Đi ngủ. Phục vụ bước 6.</p>
+  <div class="vgrid"><a class="vcard" href="https://www.youtube.com/watch?v=bRLL5KrBN5U" target="_blank" rel="noopener" data-lang="en" data-t="how to arm ax pro system via keypad, keyfob and tag reader? remote, keyfob và bàn phím: bật, tắt, chế độ stay english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to arm AX PRO system via Keypad, Keyfob and Tag Reader?</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=3vjpizSpOQE" target="_blank" rel="noopener" data-lang="en" data-t="how to arm and disarm ax pro alarm system via keypad, keyfob and tag reader (function off) remote, keyfob và bàn phím: bật, tắt, chế độ stay english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to Arm and Disarm AX PRO Alarm System via Keypad, Keyfob and Tag Reader (function off)</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=nSZpIW0mbmg" target="_blank" rel="noopener" data-lang="en" data-t="how to arm and disarm the ax pro alarm system via keypad, keyfob and tag reader (function on) remote, keyfob và bàn phím: bật, tắt, chế độ stay english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to Arm and Disarm the AX PRO Alarm System via Keypad, Keyfob and Tag Reader (function on)</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=zcU7QsXyWyU" target="_blank" rel="noopener" data-lang="en" data-t="how to arm ax pro system via keypad, keyfob and tag reader with &quot;arm with faults&quot; function on/off remote, keyfob và bàn phím: bật, tắt, chế độ stay english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>How to Arm AX PRO System via Keypad, Keyfob and Tag Reader with &quot;Arm with Faults&quot; Function ON/OFF</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=wH7qrjYobec" target="_blank" rel="noopener" data-lang="en" data-t="hikvision ax pro reset keyfob guide remote, keyfob và bàn phím: bật, tắt, chế độ stay english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>Hikvision AX Pro Reset Keyfob Guide</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a><a class="vcard" href="https://www.youtube.com/watch?v=H319ss9lBT4" target="_blank" rel="noopener" data-lang="en" data-t="how to use *new* hikvision lcd keypad remote, keyfob và bàn phím: bật, tắt, chế độ stay english"><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span><b>HOW TO USE *NEW* HIKVISION LCD KEYPAD</b><small><span class="lang">English</span>YouTube, mở tab mới</small></span></a></div>
+  <p class="moreq"><a href="https://www.youtube.com/results?search_query=Hikvision+AX+PRO+keyfob+stay+arm" target="_blank" rel="noopener">Tìm thêm trên YouTube: Hikvision AX PRO keyfob stay arm</a></p>
+</section>
+  <p class="none" id="none">Không tìm thấy video phù hợp. Thử từ khoá khác hoặc bỏ bộ lọc ngôn ngữ.</p>
+
+  <section class="vgroup" id="tai-lieu">
+    <h2>Tài liệu và trang sản phẩm</h2>
+    <p class="sub">Đối chiếu thông số và cách đấu nối với trang nhà sản xuất hoặc nhà phân phối.</p>
+    <div class="card"><ul class="pill-list"><li><a href="https://www.hikvision.com/en/products/Alarm-Products/wireless-intrusion-alarm/ax-pro/" target="_blank" rel="noopener">Hikvision – dòng AX PRO (trang chủ sản phẩm)</a></li><li><a href="https://hikvision.vn/san-pham/he-thong-bao-dong/tu-bao-dong-khong-day-ax-hub/bo-kit-bao-dong-64-vung-khong-day-hikvision-ds-pwa64-kit-wb.html" target="_blank" rel="noopener">Hikvision Việt Nam – bộ kit DS-PWA64-Kit-WB</a></li><li><a href="https://hikvisionvietnam.net/blog-hikvision-huong-dan-su-dung-tu-van-camera-hikvision/huong-dan-cai-dat-va-su-dung-trung-tam-bao-dong-hikvision-ax-pro.html" target="_blank" rel="noopener">Hướng dẫn cài đặt và sử dụng trung tâm AX PRO</a></li><li><a href="https://hikvisionvietnam.net/blog-hikvision-huong-dan-su-dung-tu-van-camera-hikvision/huong-dan-cai-dat-trung-tam-bao-dong-hikvision-ax-pro-tren-phan-mem-hikconnect.html" target="_blank" rel="noopener">Hướng dẫn cài đặt AX PRO trên phần mềm Hik-Connect</a></li><li><a href="https://abaro.vn/san-pham/bo-beam-hang-rao-chong-trom-hong-ngoai-takex-pbs-15t/" target="_blank" rel="noopener">Takex PBS-15T (trang sản phẩm)</a></li><li><a href="https://www.hongthuy.com.vn/blogs/thong-tin-cong-nghe/bao-dong-hang-rao-hong-ngoai-takex" target="_blank" rel="noopener">Tổng quan beam Takex</a></li></ul></div>
+  </section>
+</div>
+
+
+<footer class="footer"><div class="wrap"><div class="cols">
+  <div><strong style="color:#fff">Công ty TNHH Đầu tư và Công nghệ STC (STC CROP)</strong><br>Buôn Ma Thuột, Đắk Lắk<br>smarthomedaklak.com</div>
+  <div>Hotline: <a href="tel:0823047047">0823 047 047</a><br>Zalo: <a href="https://zalo.me/0934750769">0934 750 769</a></div>
+  <div>Bản tư vấn dự kiến, cập nhật 21/09/2026.<br>Giá và cấu hình chốt chính thức sau khảo sát hiện trường.</div>
+</div></div></footer>
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  if(btn){btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var sysDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var isDark=cur?cur==='dark':sysDark;
+    root.setAttribute('data-theme',isDark?'light':'dark');
+  });}
+})();
+</script>
+<script>
+(function(){
+  var q=document.getElementById('q'), chips=document.getElementById('langChips'), lang='all';
+  var cards=[].slice.call(document.querySelectorAll('.vcard')), groups=[].slice.call(document.querySelectorAll('[data-group]'));
+  function apply(){
+    var term=q.value.trim().toLowerCase(), shown=0;
+    cards.forEach(function(c){
+      var ok=(lang==='all'||c.getAttribute('data-lang')===lang)&&(!term||c.getAttribute('data-t').indexOf(term)>-1);
+      c.style.display=ok?'':'none'; if(ok)shown++;
+    });
+    groups.forEach(function(g){
+      var any=[].some.call(g.querySelectorAll('.vcard'),function(c){return c.style.display!=='none';});
+      g.style.display=any?'':'none';
+    });
+    document.getElementById('none').style.display=shown?'none':'block';
+    document.getElementById('count').textContent='Đang hiển thị '+shown+' / '+cards.length+' video';
+  }
+  q.addEventListener('input',apply);
+  chips.addEventListener('click',function(ev){
+    var b=ev.target.closest('.chip'); if(!b)return;
+    lang=b.getAttribute('data-l');
+    [].forEach.call(chips.querySelectorAll('.chip'),function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+    apply();
+  });
+  apply();
+  if(location.hash){var t=document.getElementById(location.hash.slice(1));if(t)setTimeout(function(){t.scrollIntoView();},50);}
+})();
+</script>
+</body>
+</html>

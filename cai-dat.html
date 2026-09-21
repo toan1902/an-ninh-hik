@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cài đặt & hướng dẫn | An ninh thông minh nhà phố BMT</title>
+<meta name="description" content="Hướng dẫn cài đặt hệ thống an ninh thông minh nhà phố: đi ống, camera AcuSense, AX PRO, beam hồng ngoại, kịch bản, chạy thử, bàn giao.">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f6f3; --surface:#fcfcfb; --surface2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --line:#e1e0d9; --line2:#c3c2b7; --accent:#0A1172; --accent-ink:#ffffff; --link:#0A1172;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4;
+  --good:#0ca30c; --good-ink:#006300; --warn:#fab219; --warn-ink:#7a4f00; --crit:#d03b3b; --crit-ink:#a32323;
+  --wall:#efeee9; --wall-line:#a9a89e; --room:#fbfbf9; --street:#dcdbd3; --glass:#cfe0f5; --tag-bg:#e9eafc;
+  --shadow:0 1px 2px rgba(11,11,11,.06), 0 8px 24px rgba(11,11,11,.06);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--link)}
+img{max-width:100%}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:650;letter-spacing:-.01em}
+h1{font-size:clamp(1.9rem,4.6vw,3rem)}
+h2{font-size:clamp(1.4rem,3vw,1.9rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 1em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--c1);outline-offset:2px;border-radius:4px}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:#0A1172;color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.site-header .wrap{display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;margin-right:auto}
+.brand .logo{height:40px;width:auto;border-radius:6px;display:block}
+.logo-fallback{display:none;place-items:center;width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#e7e9f5,#9aa1c9);color:#0A1172;font-weight:800;font-size:.8rem;letter-spacing:.02em}
+.brand-text{display:flex;flex-direction:column;font-weight:700;line-height:1.15}
+.brand-text small{font-weight:400;font-size:.72rem;color:#c8cbe8}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:#dfe1f5;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:.95rem}
+.nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav a[aria-current="page"]{background:#fff;color:#0A1172;font-weight:650}
+.theme-btn{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:6px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+.theme-btn:hover{background:rgba(255,255,255,.12)}
+
+/* generic blocks */
+section.block{padding:44px 0 8px}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);font-weight:650;margin-bottom:6px}
+.lead{font-size:1.08rem;color:var(--ink2);max-width:68ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:#0A1172;color:#fff;border-color:#0A1172}
+.btn.primary:hover{background:#1520a3}
+.btn.small{padding:6px 10px;font-size:.88rem;font-weight:550}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:650;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2);background:var(--surface2)}
+.badge.ok{color:var(--good-ink);border-color:var(--good)}
+.badge.todo{color:var(--warn-ink);border-color:var(--warn)}
+.badge.crit{color:var(--crit-ink);border-color:var(--crit)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:#0A1172;color:#fff;border-color:#0A1172}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--ink);padding:9px 15px;font:inherit;font-weight:600;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:#0A1172;color:#fff}
+table.tbl{width:100%;border-collapse:collapse;font-size:.93rem}
+.tbl th,.tbl td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.tbl tr[data-dev]{cursor:pointer}
+.tbl tr[data-dev]:hover td{background:var(--surface2)}
+.tbl tr.sel td{background:var(--tag-bg)}
+.scroll-x{overflow-x:auto}
+.note{border-left:4px solid var(--warn);background:var(--surface2);padding:10px 14px;border-radius:0 10px 10px 0;font-size:.93rem;color:var(--ink2)}
+.note.info{border-left-color:var(--c1)}
+.note strong{color:var(--ink)}
+.hero{background:linear-gradient(160deg,#0A1172 0%,#141e9a 60%,#2b36b8 100%);color:#fff;padding:52px 0 40px}
+.hero h1{margin-bottom:.35em}
+.hero .lead{color:#dfe1f5}
+.hero .btn{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);color:#fff}
+.hero .btn.primary{background:#fff;color:#0A1172;border-color:#fff}
+.hero .btn:hover{background:rgba(255,255,255,.18)}
+.hero .btn.primary:hover{background:#eceefb}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px}
+.tile b{display:block;font-size:2rem;line-height:1.1}
+.tile span{font-size:.88rem;color:#dfe1f5}
+.crumbs{font-size:.9rem;color:var(--ink2);margin:20px 0 6px}
+.footer{margin-top:56px;background:#0A1172;color:#dfe1f5;padding:28px 0;font-size:.92rem}
+.footer a{color:#fff}
+.footer .cols{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between}
+.pill-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0;font-size:.93rem}
+.kv dt{color:var(--ink2)}
+.kv dd{margin:0}
+@media (max-width:520px){.kv{grid-template-columns:1fr}.kv dt{font-weight:650}}
+@media print{.site-header,.theme-btn,.footer{display:none}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.hero.slim{padding:34px 0 26px}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;align-items:start;margin-top:26px}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+.toc{position:sticky;top:76px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.toc h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin:0 0 8px}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:s -1}
+.toc a{display:flex;gap:8px;align-items:baseline;padding:6px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:.92rem}
+.toc a:hover{background:var(--surface2)}
+.toc a.on{background:var(--tag-bg);font-weight:650}
+.toc .n{flex:none;width:20px;height:20px;border-radius:50%;background:#0A1172;color:#fff;font-size:.72rem;display:grid;place-items:center;font-weight:700}
+@media (max-width:900px){.toc{position:static}.toc ol{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.toc ol{grid-template-columns:1fr}}
+.step{scroll-margin-top:84px;margin-bottom:22px}
+.step h2{display:flex;gap:12px;align-items:center;font-size:1.35rem}
+.step h2 .n{flex:none;width:32px;height:32px;border-radius:50%;background:#0A1172;color:#fff;font-size:.95rem;display:grid;place-items:center}
+.step .when{font-size:.86rem;color:var(--ink2);margin:-4px 0 12px}
+.step h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:14px 0 4px}
+.step ol.do,.step ul{margin:0 0 6px;padding-left:1.25em}
+.step li{margin:4px 0}
+.step .two{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}
+@media (max-width:760px){.step .two{grid-template-columns:1fr}}
+kbd,code.k{font:600 .85em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.path{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem;background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:block;margin:6px 0;white-space:normal;overflow-wrap:anywhere}
+.vid{display:inline-flex;gap:6px;align-items:center}
+.prog{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:10px 0 14px}
+.bar{flex:1;min-width:180px;height:10px;border-radius:5px;background:var(--surface2);border:1px solid var(--line);overflow:hidden;display:flex;gap:2px}
+.bar i{display:block;height:100%}
+.bar .ok{background:var(--c3)}
+.bar .no{background:var(--c2)}
+.plabel{font-size:.9rem;color:var(--ink2);font-variant-numeric:tabular-nums}
+.tests{display:grid;gap:10px}
+.test{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:6px 14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+@media (max-width:640px){.test{grid-template-columns:44px 1fr}.test .res{grid-column:1 / -1}}
+.test .id{font-weight:800;font-size:1.05rem}
+.test h3{font-size:1rem;margin:0 0 3px}
+.test p{margin:0 0 3px;font-size:.9rem;color:var(--ink2)}
+.test p b{color:var(--ink)}
+.res{display:inline-flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.res button{border:0;background:transparent;color:var(--ink);font:inherit;font-size:.86rem;font-weight:600;padding:7px 11px;cursor:pointer;border-right:1px solid var(--line)}
+.res button:last-child{border-right:0}
+.res button[aria-pressed="true"].g{background:var(--good-ink);color:#fff}
+.res button[aria-pressed="true"].b{background:var(--crit-ink);color:#fff}
+.res button[aria-pressed="true"].n{background:var(--surface2)}
+.test.done-ok{border-left:5px solid var(--good)}
+.test.done-no{border-left:5px solid var(--crit)}
+.phase{margin:20px 0 6px;font-size:1.05rem}
+</style>
+</head>
+<body>
+
+<header class="site-header"><div class="wrap">
+  <a class="brand" href="index.html" aria-label="STC CROP - trang chủ">
+    <img class="logo" src="stc-crop-logo.jpg" alt="STC CROP" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+    <span class="logo-fallback" aria-hidden="true">STC</span>
+    <span class="brand-text">STC CROP<small>An ninh thông minh nhà phố</small></span>
+  </a>
+  <nav class="nav" aria-label="Điều hướng chính"><a href="index.html">Tổng quan</a><a href="tinh-nang.html">Tính năng chi tiết</a><a href="cai-dat.html" aria-current="page">Cài đặt & hướng dẫn</a><a href="video.html">Video</a></nav>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Đổi giao diện sáng/tối">Sáng / Tối</button>
+</div></header>
+
+<section class="hero slim"><div class="wrap">
+  <div class="eyebrow" style="color:#c8cbe8">Cài đặt và hướng dẫn</div>
+  <h1>Từ khảo sát đến bàn giao, tám bước</h1>
+  <p class="lead">Quy trình thi công hai đợt: chôn ống và kéo dây trước khi tô trát, lắp thiết bị sau khi sơn. Có kèm danh sách chạy thử 19 bài để tick khi làm việc với khách.</p>
+  <p style="margin-top:14px"><a class="btn primary" href="#s0">Bắt đầu từ bước 0</a> <a class="btn" href="#s7">Danh sách chạy thử</a> <a class="btn" href="video.html">Video hướng dẫn</a></p>
+</div></section>
+<div class="wrap">
+  <div class="layout">
+    <nav class="toc" aria-label="Các bước"><h2>Các bước</h2><ol><li><a href="#s0" data-s="s0"><span class="n">0</span><span>Chuẩn bị, khảo sát</span></a></li><li><a href="#s1" data-s="s1"><span class="n">1</span><span>Đợt 1: đi ống, kéo dây</span></a></li><li><a href="#s2" data-s="s2"><span class="n">2</span><span>Tủ kỹ thuật</span></a></li><li><a href="#s3" data-s="s3"><span class="n">3</span><span>Camera và đầu ghi</span></a></li><li><a href="#s4" data-s="s4"><span class="n">4</span><span>Trung tâm AX PRO</span></a></li><li><a href="#s5" data-s="s5"><span class="n">5</span><span>Beam và PM-WI1</span></a></li><li><a href="#s6" data-s="s6"><span class="n">6</span><span>Kịch bản 3 chế độ</span></a></li><li><a href="#s7" data-s="s7"><span class="n">7</span><span>Chạy thử, nghiệm thu</span></a></li><li><a href="#s8" data-s="s8"><span class="n">8</span><span>Bàn giao, bảo trì</span></a></li></ol></nav>
+    <div>
+      <p class="note">Menu và tên nút lấy theo giao diện phổ biến của Hikvision và Hik-Connect. Có thể khác theo phiên bản firmware và ứng dụng, nên đối chiếu tài liệu đi kèm thiết bị khi thao tác.</p>
+      <div style="height:16px"></div>
+      
+<section class="card step" id="s0">
+  <h2><span class="n">0</span>Chuẩn bị và khảo sát</h2>
+  <p class="when">Thời điểm: Trước khi ký hợp đồng và trước khi tô trát</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Đi khảo sát cùng chủ nhà, chụp ảnh từng tầng, đo chiều dài tuyến dây từ tủ kỹ thuật đến từng camera và từng cụm beam.</li><li>Chốt vị trí tủ kỹ thuật: tầng trệt, nơi thoáng, có ổ cắm riêng và đường ống lên các tầng.</li><li>Đánh dấu 6 cửa cần gắn cảm biến, 5 vị trí camera, 2 tuyến beam trên bản vẽ hoặc ảnh chụp.</li><li>Đo thử sóng không dây tại điểm xa nhất nếu nhà đã có tường bê tông dày.</li><li>Ghi các câu hỏi khách hàng trong tệp báo giá (sheet Khảo sát) và chốt gói Tiết kiệm, Chuẩn hay Nâng cao.</li></ol><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Có bản vẽ đánh dấu vị trí thiết bị, khách đã đồng ý.</li><li>Có danh sách vật tư theo chiều dài dây thực tế.</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Chốt vị trí camera khi chưa biết nhà hàng xóm nhìn thẳng vào đâu.</li><li>Quên hỏi khách về thú cưng hoặc người hay dậy đêm, làm PIR và cửa báo nhầm.</li></ul></div></div><p style="margin-top:12px"><a class="btn small vid" href="video.html#nhom-tong-quan">Xem video: Video tổng quan AX PRO</a></p>
+</section>
+<section class="card step" id="s1">
+  <h2><span class="n">1</span>Đợt một: đi ống và kéo dây âm tường</h2>
+  <p class="when">Thời điểm: Trước khi tô trát, sau khi xây xong tường</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Đi ống D20 âm tường và âm trần cho từng tuyến, ưu tiên đường thẳng, góc cong lớn, có dây mồi.</li><li>Kéo cáp Cat6 lõi đồng nguyên chất (không dùng CCA) cho từng camera, mỗi tuyến không quá 90 m.</li><li>Giữ khoảng cách khoảng 30 cm với dây điện 220V, nếu phải giao nhau thì cắt vuông góc.</li><li>Kéo cáp tín hiệu và nguồn cho hai tuyến beam ban công và sân thượng, chừa đầu ở đúng chiều cao gắn trụ.</li><li>Đặt sẵn ống cho contact âm ở khung cửa chính và các cửa quan trọng.</li><li>Dán nhãn hai đầu dây (C1, C2, B1, D1...) và chụp ảnh trước khi trát.</li></ol><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Đo thông dây bằng máy test cáp, ghi lại kết quả từng tuyến.</li><li>Ảnh đường ống, có thước hoặc nhãn, lưu vào hồ sơ bàn giao.</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Dùng ống mềm bẻ gấp làm khó kéo dây sau này.</li><li>Quên chừa hộp nối chống nước tại vị trí camera ngoài trời.</li><li>Không lưu ảnh đường ống, sau này khoan trúng ống.</li></ul></div></div>
+</section>
+<section class="card step" id="s2">
+  <h2><span class="n">2</span>Tủ kỹ thuật: NVR, switch PoE, UPS, trung tâm</h2>
+  <p class="when">Thời điểm: Sau khi trát xong, trước khi sơn hoặc song song đợt hai</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Lắp tủ hoặc hộp treo tường, đặt UPS dưới cùng, sau đó switch PoE, NVR và router.</li><li>Đặt trung tâm AX PRO ở giữa nhà hoặc ngay cạnh tủ, không đặt bên trong tủ kim loại kín.</li><li>Cấp nguồn cho NVR, switch PoE và router qua UPS. Trung tâm dùng nguồn riêng và pin dự phòng của nó.</li><li>Đấu Cat6 từ các camera vào switch theo thứ tự nhãn, cắm switch vào NVR.</li><li>Cài mật khẩu mạnh, khác nhau, cho NVR, camera, trung tâm. Ghi vào sổ giao cho chủ nhà.</li></ol><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Tổng công suất PoE của 5 camera nhỏ hơn 80% ngân sách của switch.</li><li>Rút điện thử: UPS giữ NVR, trung tâm chuyển sang pin.</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Đặt tủ nơi nóng hoặc bí, thiết bị nhanh hỏng.</li><li>Cắm trung tâm và camera vào cùng một ổ đa năng không có UPS.</li></ul></div></div>
+</section>
+<section class="card step" id="s3">
+  <h2><span class="n">3</span>Camera và đầu ghi: cài AcuSense</h2>
+  <p class="when">Thời điểm: Đợt hai, sau khi lắp camera</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Gắn camera, chỉnh góc, siết ốc, bôi keo silicon chống nước tại các lỗ dây.</li><li>Kích hoạt camera và đặt mật khẩu (qua SADP hoặc trực tiếp từ NVR), bật Plug-and-Play để NVR tự nhận.</li><li>Vẽ vùng phát hiện: hàng rào ảo dọc lan can, vùng xâm nhập tại sân thượng, mặt tiền, cửa hậu.</li><li>Đặt đối tượng phát hiện là Người và Xe, tắt phát hiện chuyển động thông thường ở vùng có cây lá.</li><li>Đặt lịch: ban đêm bật đầy đủ, ban ngày bật những vùng thực sự cần.</li><li>Bật xem từ xa Hik-Connect cho NVR và thử đăng nhập từ điện thoại bằng 4G.</li></ol><h4>Đường dẫn menu (tham khảo)</h4><span class="path">Cấu hình sự kiện: Configuration &gt; Event &gt; Smart Event (đặt Line Crossing hoặc Intrusion Detection, chọn Detection Target là Human, Vehicle).</span><span class="path">Xem lại theo loại đối tượng: Playback &gt; Smart Search (tên menu có thể khác theo phiên bản firmware).</span><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Mỗi camera nhìn rõ người ở 10 đến 15 m vào ban đêm.</li><li>Đi qua vùng vẽ thì có sự kiện, lá cây gió thổi thì không.</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Vẽ vùng quá rộng, ôm cả vỉa hè, làm báo mỗi khi có người đi ngang.</li><li>Đặt camera hướng thẳng vào đèn đường, ngược sáng.</li></ul></div></div><p style="margin-top:12px"><a class="btn small vid" href="video.html#nhom-camera">Xem video: Video AcuSense line crossing và intrusion</a></p>
+</section>
+<section class="card step" id="s4">
+  <h2><span class="n">4</span>Trung tâm AX PRO trên Hik-Connect</h2>
+  <p class="when">Thời điểm: Đợt hai, sau khi có mạng</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Cắm nguồn và cáp mạng cho trung tâm, đợi đèn báo mạng sáng ổn định.</li><li>Mở Hik-Connect, thêm thiết bị bằng cách quét mã QR ở mặt sau của trung tâm, đặt tên và mật khẩu.</li><li>Ghép từng thiết bị: thêm vào ứng dụng rồi kích hoạt (kéo tab hoặc quét QR của thiết bị), đặt tên theo vị trí (Cửa chính, Cửa ban công...).</li><li>Ghép remote, nút khẩn cấp, còi, PIR. Đo cường độ tín hiệu từng thiết bị trong ứng dụng.</li><li>Đặt các thông số: thời gian hú tối đa 60 giây, entry delay và exit delay, cho phép thông báo mất điện và mất kết nối.</li><li>Tạo tài khoản người dùng cho chủ nhà và cho STC, phân quyền riêng.</li></ol><h4>Đường dẫn menu (tham khảo)</h4><span class="path">Thêm thiết bị: Hik-Connect &gt; Add Device &gt; quét QR.</span><span class="path">Ghép ngoại vi: Device &gt; Devices (Peripherals) &gt; Add.</span><span class="path">Đặt còi: Device Settings &gt; Siren Settings (tên có thể khác theo phiên bản).</span><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Mọi thiết bị online, tín hiệu mức khá trở lên.</li><li>Tắt, bật thử từ điện thoại khi dùng 4G.</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Ghép thiết bị khi chưa đặt tên rõ, sau này khó biết cảm biến nào báo.</li><li>Để mật khẩu mặc định hoặc dùng chung mật khẩu ở nhiều thiết bị.</li></ul></div></div><p style="margin-top:12px"><a class="btn small vid" href="video.html#nhom-ax-pro">Xem video: Video cài đặt AX PRO trên Hik-Connect</a></p>
+</section>
+<section class="card step" id="s5">
+  <h2><span class="n">5</span>Beam hồng ngoại và module PM-WI1</h2>
+  <p class="when">Thời điểm: Đợt hai, sau khi sơn xong và trụ đã cố định</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Gắn hai trụ phát và thu đối diện nhau ở chiều cao khoảng 1,1 m cho ban công, ngang tầm người khi trèo.</li><li>Căn chỉnh tia bằng đồng hồ đo tín hiệu hoặc đèn báo trên bộ thu cho tới khi tín hiệu tối đa.</li><li>Nối ngõ ra rơ-le của bộ thu vào đầu vào của DS-PM-WI1, chọn NC hoặc NO cho khớp.</li><li>Ghép module vào trung tâm như một thiết bị không dây, đặt tên B1, B2.</li><li>Đặt độ nhạy và thời gian giữ để vật nhỏ, chim, lá bay qua không đủ chặn tia.</li><li>Thử chặn tia 20 lần và đo thời gian từ chặn đến khi ứng dụng báo.</li></ol><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Chặn tia thì báo, bỏ chặn thì hết báo. Không báo giả sau 24 giờ.</li><li>Thử vào lúc nắng thấp chiếu thẳng vào bộ thu (6h và 17 đến 18h).</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Đặt bộ thu hướng ra hướng tây, nắng chiều gây nhiễu.</li><li>Lắp trụ trên lan can lung lay làm lệch tia mỗi khi gió.</li></ul></div></div><p style="margin-top:12px"><a class="btn small vid" href="video.html#nhom-beam">Xem video: Video lắp và căn chỉnh beam hàng rào hồng ngoại</a></p>
+</section>
+<section class="card step" id="s6">
+  <h2><span class="n">6</span>Kịch bản ba chế độ và logic hai cấp</h2>
+  <p class="when">Thời điểm: Sau khi thiết bị đã ghép xong</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Chế độ Ở nhà: bật camera ghi hình, canh cửa chính, tắt PIR trong nhà.</li><li>Chế độ Đi ngủ: canh cửa, beam và camera, tắt PIR. Gán vào nút Stay của remote nếu thử được.</li><li>Chế độ Vắng nhà: canh tất cả, bao gồm PIR.</li><li>Cấp 1: chỉ một bằng chứng, chỉ đẩy ảnh và thông báo, còi camera nháy, không hú trong nhà.</li><li>Cấp 2: hai bằng chứng độc lập trong 60 giây, hoặc cửa mở khi đang Đi ngủ, thì hú trong nhà tối đa 60 giây, lặp tối đa 2 lần cách 5 phút.</li><li>Nếu trung tâm không tự xác nhận chéo với camera, dùng phương án dự phòng: cấu hình theo vùng hoặc thời gian, ghi lại trong hồ sơ.</li></ol><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Chạy đủ 3 chế độ và cả hai cấp, so với bảng kịch bản trong trang Tổng quan.</li><li>Chủ nhà bấm thử remote và hiểu ba trạng thái.</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Cho beam tự hú còi ngay, dễ báo giả và phiền hàng xóm.</li><li>Không giải thích cho chủ nhà khi nào hệ thống chỉ gửi thông báo chứ không hú.</li></ul></div></div><p style="margin-top:12px"><a class="btn small vid" href="video.html#nhom-remote">Xem video: Video arm/disarm AX PRO bằng keyfob</a></p>
+</section>
+<section class="card step" id="s7">
+  <h2><span class="n">7</span>Chạy thử và nghiệm thu</h2>
+  <p class="when">Thời điểm: Trước khi bàn giao, và 2 tuần chạy đêm tại nhà khách</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Giai đoạn B: thử trên bàn tại STC, chưa cam kết với khách cho đến khi đạt các bài B1 đến B11.</li><li>Giai đoạn S: thử tại nhà khách, gồm chạy đêm liên tục 14 đêm và thử trèo có kiểm soát.</li><li>Ghi kết quả từng bài vào danh sách bên dưới, sao chép sang biên bản nghiệm thu.</li></ol><div class="prog"><div class="bar" id="bar" aria-hidden="true"><i class="ok" id="bOk" style="width:0"></i><i class="no" id="bNo" style="width:0"></i></div><span class="plabel" id="plabel" role="status" aria-live="polite"></span><button class="btn small" type="button" id="copyBtn">Sao chép kết quả</button><button class="btn small" type="button" id="resetBtn">Xoá hết</button></div><p class="note info">Kết quả chỉ giữ trong trang này. Tải lại trang là mất, nên hãy bấm <b>Sao chép kết quả</b> để dán vào biên bản.</p><h3 class="phase">Giai đoạn B: thử trên bàn tại STC</h3><div class="tests"><div class="test" data-id="B1" data-name="Kết nối và độ ổn định"><div class="id">B1</div><div><h3>Kết nối và độ ổn định</h3><p><b>Cách thử:</b> Thêm trung tâm, PIR, cảm biến từ, remote vào Hik-Connect; để chạy liên tục.</p><p><b>Tiêu chí đạt:</b> Tất cả thiết bị online liên tục 72 giờ.</p></div><div class="res" role="group" aria-label="Kết quả B1"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B2" data-name="Nút Đi ngủ (remote)"><div class="id">B2</div><div><h3>Nút Đi ngủ (remote)</h3><p><b>Cách thử:</b> Gán nút vào chế độ Đi ngủ (Stay); bấm 20 lần từ 2 vị trí trong nhà.</p><p><b>Tiêu chí đạt:</b> ≥19/20 lần thành công, phản hồi ≤3 giây.</p></div><div class="res" role="group" aria-label="Kết quả B2"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B3" data-name="Beam qua DS-PM-WI1"><div class="id">B3</div><div><h3>Beam qua DS-PM-WI1</h3><p><b>Cách thử:</b> Chặn tia 20 lần bằng người đi qua; ghi thời gian từ chặn đến báo trên app.</p><p><b>Tiêu chí đạt:</b> 20/20 lần báo, trễ ≤2 giây.</p></div><div class="res" role="group" aria-label="Kết quả B3"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B4" data-name="Chống báo giả của beam"><div class="id">B4</div><div><h3>Chống báo giả của beam</h3><p><b>Cách thử:</b> Phất giấy, lá, quét tay rất nhanh (&lt;0,1 giây), che bằng côn trùng giả.</p><p><b>Tiêu chí đạt:</b> Không báo khi vật che nhỏ hoặc ngắn hơn độ trễ cài đặt.</p></div><div class="res" role="group" aria-label="Kết quả B4"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B5" data-name="Camera AcuSense phân loại"><div class="id">B5</div><div><h3>Camera AcuSense phân loại</h3><p><b>Cách thử:</b> 10 lượt người đi qua vùng hàng rào ảo; 10 lượt xe máy; lá cây, bóng đèn xe trong 24 giờ.</p><p><b>Tiêu chí đạt:</b> ≥9/10 lượt người được báo; 0 báo do lá và đèn xe.</p></div><div class="res" role="group" aria-label="Kết quả B5"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B6" data-name="Logic hai cấp"><div class="id">B6</div><div><h3>Logic hai cấp</h3><p><b>Cách thử:</b> Cấp 1: chỉ beam hoặc chỉ camera. Cấp 2: beam + camera trong 60 giây.</p><p><b>Tiêu chí đạt:</b> Cấp 1 chỉ đẩy ảnh, không hú; cấp 2 mới hú còi trong nhà. Nếu trung tâm không hỗ trợ, ghi rõ phương án dự phòng.</p></div><div class="res" role="group" aria-label="Kết quả B6"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B7" data-name="Thời gian thông báo"><div class="id">B7</div><div><h3>Thời gian thông báo</h3><p><b>Cách thử:</b> Đo từ lúc có sự kiện đến khi điện thoại nhận thông báo và ảnh, qua Wi-Fi và 4G.</p><p><b>Tiêu chí đạt:</b> ≤10 giây ở cả hai.</p></div><div class="res" role="group" aria-label="Kết quả B7"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B8" data-name="Mất điện"><div class="id">B8</div><div><h3>Mất điện</h3><p><b>Cách thử:</b> Rút điện trung tâm và UPS; đo thời gian chạy và cảnh báo mất điện.</p><p><b>Tiêu chí đạt:</b> Trung tâm chạy pin ≥10 giờ; UPS giữ NVR ≥30 phút; có tin nhắn mất điện.</p></div><div class="res" role="group" aria-label="Kết quả B8"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B9" data-name="Mất Internet"><div class="id">B9</div><div><h3>Mất Internet</h3><p><b>Cách thử:</b> Rút cáp WAN; gây báo động.</p><p><b>Tiêu chí đạt:</b> NVR vẫn ghi; trung tâm gọi hoặc SMS qua SIM.</p></div><div class="res" role="group" aria-label="Kết quả B9"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B10" data-name="Công suất PoE"><div class="id">B10</div><div><h3>Công suất PoE</h3><p><b>Cách thử:</b> Bật đủ camera, IR về đêm; đo công suất trên switch.</p><p><b>Tiêu chí đạt:</b> Tải ≤80% công suất switch.</p></div><div class="res" role="group" aria-label="Kết quả B10"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="B11" data-name="Tích hợp FPT (tuỳ chọn)"><div class="id">B11</div><div><h3>Tích hợp FPT (tuỳ chọn)</h3><p><b>Cách thử:</b> Thử lấy tiếp điểm khô hoặc tín hiệu Zigbee từ trung tâm sang FPT Smart Home.</p><p><b>Tiêu chí đạt:</b> Ghi nhận khả thi hay không; nếu không, bỏ qua giai đoạn 2.</p></div><div class="res" role="group" aria-label="Kết quả B11"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div></div><h3 class="phase">Giai đoạn S: thử tại nhà khách</h3><div class="tests"><div class="test" data-id="S1" data-name="Vùng phủ sóng RF"><div class="id">S1</div><div><h3>Vùng phủ sóng RF</h3><p><b>Cách thử:</b> Đặt cảm biến ở cửa xa nhất, qua tường bê tông; xem cường độ tín hiệu 24 giờ.</p><p><b>Tiêu chí đạt:</b> Không rớt kết nối, cường độ mức khá trở lên.</p></div><div class="res" role="group" aria-label="Kết quả S1"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="S2" data-name="Nắng chiếu vào beam"><div class="id">S2</div><div><h3>Nắng chiếu vào beam</h3><p><b>Cách thử:</b> Quan sát 3 khung giờ: 6h, 17h, 18h trong 3 ngày.</p><p><b>Tiêu chí đạt:</b> Không báo giả do nắng.</p></div><div class="res" role="group" aria-label="Kết quả S2"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="S3" data-name="Thử trèo có kiểm soát"><div class="id">S3</div><div><h3>Thử trèo có kiểm soát</h3><p><b>Cách thử:</b> Chủ nhà biết trước; 10 lần trèo ban công và sân thượng khi ở chế độ Đi ngủ.</p><p><b>Tiêu chí đạt:</b> 10/10 lần được phát hiện.</p></div><div class="res" role="group" aria-label="Kết quả S3"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="S4" data-name="Chạy đêm liên tục"><div class="id">S4</div><div><h3>Chạy đêm liên tục</h3><p><b>Cách thử:</b> 14 đêm liên tiếp ở chế độ Đi ngủ; ghi số lần báo giả mỗi đêm.</p><p><b>Tiêu chí đạt:</b> ≤1 báo giả/tuần; 0 lần hú ngoài ý muốn.</p></div><div class="res" role="group" aria-label="Kết quả S4"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="S5" data-name="Sinh hoạt ban đêm"><div class="id">S5</div><div><h3>Sinh hoạt ban đêm</h3><p><b>Cách thử:</b> Chủ nhà dậy đi vệ sinh, mở cửa nội bộ, xuống bếp.</p><p><b>Tiêu chí đạt:</b> Không báo nhầm.</p></div><div class="res" role="group" aria-label="Kết quả S5"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="S6" data-name="Tiếng ồn hàng xóm"><div class="id">S6</div><div><h3>Tiếng ồn hàng xóm</h3><p><b>Cách thử:</b> Đo dB bằng ứng dụng ở vỉa hè và phòng sát vách khi còi hú thử.</p><p><b>Tiêu chí đạt:</b> Đạt mức thống nhất với chủ nhà (đề xuất ≤55 dB tại ranh giới, cần đo thực tế).</p></div><div class="res" role="group" aria-label="Kết quả S6"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="S7" data-name="Hình ảnh ban đêm"><div class="id">S7</div><div><h3>Hình ảnh ban đêm</h3><p><b>Cách thử:</b> Người đứng ở 10 đến 15 m trước camera mặt tiền lúc tối.</p><p><b>Tiêu chí đạt:</b> Nhận ra người, trang phục, hướng di chuyển.</p></div><div class="res" role="group" aria-label="Kết quả S7"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div><div class="test" data-id="S8" data-name="Bàn giao sử dụng"><div class="id">S8</div><div><h3>Bàn giao sử dụng</h3><p><b>Cách thử:</b> Chủ nhà tự dùng app và remote, đổi 3 chế độ, tắt báo động.</p><p><b>Tiêu chí đạt:</b> Tự thao tác đúng không cần hỗ trợ.</p></div><div class="res" role="group" aria-label="Kết quả S8"><button type="button" class="n" data-v="0" aria-pressed="true">Chưa thử</button><button type="button" class="g" data-v="1" aria-pressed="false">Đạt</button><button type="button" class="b" data-v="2" aria-pressed="false">Không đạt</button></div></div></div>
+</section>
+<section class="card step" id="s8">
+  <h2><span class="n">8</span>Bàn giao và bảo trì</h2>
+  <p class="when">Thời điểm: Sau khi đạt nghiệm thu</p>
+  <h4>Việc cần làm</h4><ol class='do'><li>Hướng dẫn chủ nhà thao tác: đổi chế độ, tắt báo động, xem lại video, đổi mật khẩu.</li><li>Giao hồ sơ: ảnh đường ống, sơ đồ vị trí, mật khẩu, bảng kịch bản, bảo hành từng thiết bị.</li><li>Lịch bảo trì: thử nút khẩn cấp và còi mỗi quý, lau ống kính và bộ thu beam, kiểm tra pin cảm biến hằng năm.</li><li>Sau 30 ngày, xem nhật ký báo giả và tinh chỉnh vùng, độ nhạy.</li></ol><div class="two"><div><h4>Kiểm tra trước khi qua bước sau</h4><ul><li>Chủ nhà tự thao tác đúng không cần hỗ trợ.</li><li>Có biên bản bàn giao có ký.</li></ul></div><div><h4>Lỗi hay gặp</h4><ul><li>Bàn giao xong không hẹn lịch xem lại sau 30 ngày.</li><li>Không thay pin cảm biến khi báo pin yếu.</li></ul></div></div>
+</section>
+    </div>
+  </div>
+</div>
+
+
+<footer class="footer"><div class="wrap"><div class="cols">
+  <div><strong style="color:#fff">Công ty TNHH Đầu tư và Công nghệ STC (STC CROP)</strong><br>Buôn Ma Thuột, Đắk Lắk<br>smarthomedaklak.com</div>
+  <div>Hotline: <a href="tel:0823047047">0823 047 047</a><br>Zalo: <a href="https://zalo.me/0934750769">0934 750 769</a></div>
+  <div>Bản tư vấn dự kiến, cập nhật 21/09/2026.<br>Giá và cấu hình chốt chính thức sau khảo sát hiện trường.</div>
+</div></div></footer>
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  if(btn){btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var sysDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var isDark=cur?cur==='dark':sysDark;
+    root.setAttribute('data-theme',isDark?'light':'dark');
+  });}
+})();
+</script>
+<script>
+(function(){
+  /* mục lục: đánh dấu bước đang xem */
+  var links=[].slice.call(document.querySelectorAll('.toc a'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){ if(en.isIntersecting){ links.forEach(function(a){a.classList.toggle('on',a.getAttribute('data-s')===en.target.id);}); }});
+    },{rootMargin:'-20% 0px -70% 0px'});
+    [].forEach.call(document.querySelectorAll('.step'),function(s){io.observe(s);});
+  }
+  /* danh sách chạy thử: chỉ giữ trong bộ nhớ */
+  var state={};
+  var tests=[].slice.call(document.querySelectorAll('.test'));
+  function render(){
+    var ok=0,no=0;
+    tests.forEach(function(t){
+      var v=state[t.getAttribute('data-id')]||0;
+      if(v===1)ok++; if(v===2)no++;
+      t.classList.toggle('done-ok',v===1); t.classList.toggle('done-no',v===2);
+      [].forEach.call(t.querySelectorAll('.res button'),function(b){b.setAttribute('aria-pressed',String(+b.getAttribute('data-v')===v));});
+    });
+    var n=tests.length;
+    document.getElementById('bOk').style.width=(ok/n*100)+'%';
+    document.getElementById('bNo').style.width=(no/n*100)+'%';
+    document.getElementById('plabel').textContent=ok+' đạt, '+no+' không đạt, '+(n-ok-no)+' chưa thử (tổng '+n+' bài)';
+  }
+  tests.forEach(function(t){
+    t.querySelector('.res').addEventListener('click',function(ev){
+      var b=ev.target.closest('button'); if(!b)return;
+      state[t.getAttribute('data-id')]=+b.getAttribute('data-v'); render();
+    });
+  });
+  document.getElementById('resetBtn').addEventListener('click',function(){state={};render();});
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var L=['KẾT QUẢ CHẠY THỬ - '+new Date().toLocaleDateString('vi-VN')];
+    tests.forEach(function(t){
+      var v=state[t.getAttribute('data-id')]||0;
+      L.push(t.getAttribute('data-id')+' '+t.getAttribute('data-name')+': '+['Chưa thử','Đạt','Không đạt'][v]);
+    });
+    var txt=L.join('\n'), btn=document.getElementById('copyBtn');
+    function done(m){var o=btn.textContent;btn.textContent=m;setTimeout(function(){btn.textContent=o;},1600);}
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){done('Đã sao chép');},function(){fallback();});}
+      else fallback();
+    }catch(x){fallback();}
+    function fallback(){
+      var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');done('Đã sao chép');}catch(y){done('Không sao chép được');}
+      document.body.removeChild(ta);
+    }
+  });
+  render();
+})();
+</script>
+</body>
+</html>

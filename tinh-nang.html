@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tính năng chi tiết | An ninh thông minh nhà phố BMT</title>
+<meta name="description" content="Tính năng chi tiết từng thiết bị trong giải pháp an ninh thông minh nhà phố Buôn Ma Thuột.">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f6f3; --surface:#fcfcfb; --surface2:#f0efec; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --line:#e1e0d9; --line2:#c3c2b7; --accent:#0A1172; --accent-ink:#ffffff; --link:#0A1172;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4;
+  --good:#0ca30c; --good-ink:#006300; --warn:#fab219; --warn-ink:#7a4f00; --crit:#d03b3b; --crit-ink:#a32323;
+  --wall:#efeee9; --wall-line:#a9a89e; --room:#fbfbf9; --street:#dcdbd3; --glass:#cfe0f5; --tag-bg:#e9eafc;
+  --shadow:0 1px 2px rgba(11,11,11,.06), 0 8px 24px rgba(11,11,11,.06);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface2:#242422; --ink:#ffffff; --ink2:#c3c2b7; --muted:#a09f96;
+  --line:#2c2c2a; --line2:#383835; --accent:#a9b1ff; --accent-ink:#0b0b0b; --link:#a9b1ff;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181;
+  --good:#0ca30c; --good-ink:#5fd35f; --warn:#fab219; --warn-ink:#fab219; --crit:#d03b3b; --crit-ink:#ff8a8a;
+  --wall:#262624; --wall-line:#55554f; --room:#1f1f1e; --street:#2a2a28; --glass:#1c3a5e; --tag-bg:#22254a;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--link)}
+img{max-width:100%}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:650;letter-spacing:-.01em}
+h1{font-size:clamp(1.9rem,4.6vw,3rem)}
+h2{font-size:clamp(1.4rem,3vw,1.9rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 1em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--c1);outline-offset:2px;border-radius:4px}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:#0A1172;color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.site-header .wrap{display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;margin-right:auto}
+.brand .logo{height:40px;width:auto;border-radius:6px;display:block}
+.logo-fallback{display:none;place-items:center;width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#e7e9f5,#9aa1c9);color:#0A1172;font-weight:800;font-size:.8rem;letter-spacing:.02em}
+.brand-text{display:flex;flex-direction:column;font-weight:700;line-height:1.15}
+.brand-text small{font-weight:400;font-size:.72rem;color:#c8cbe8}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:#dfe1f5;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:.95rem}
+.nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav a[aria-current="page"]{background:#fff;color:#0A1172;font-weight:650}
+.theme-btn{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:6px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+.theme-btn:hover{background:rgba(255,255,255,.12)}
+
+/* generic blocks */
+section.block{padding:44px 0 8px}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);font-weight:650;margin-bottom:6px}
+.lead{font-size:1.08rem;color:var(--ink2);max-width:68ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:#0A1172;color:#fff;border-color:#0A1172}
+.btn.primary:hover{background:#1520a3}
+.btn.small{padding:6px 10px;font-size:.88rem;font-weight:550}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:650;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2);background:var(--surface2)}
+.badge.ok{color:var(--good-ink);border-color:var(--good)}
+.badge.todo{color:var(--warn-ink);border-color:var(--warn)}
+.badge.crit{color:var(--crit-ink);border-color:var(--crit)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:#0A1172;color:#fff;border-color:#0A1172}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--ink);padding:9px 15px;font:inherit;font-weight:600;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:#0A1172;color:#fff}
+table.tbl{width:100%;border-collapse:collapse;font-size:.93rem}
+.tbl th,.tbl td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.tbl tr[data-dev]{cursor:pointer}
+.tbl tr[data-dev]:hover td{background:var(--surface2)}
+.tbl tr.sel td{background:var(--tag-bg)}
+.scroll-x{overflow-x:auto}
+.note{border-left:4px solid var(--warn);background:var(--surface2);padding:10px 14px;border-radius:0 10px 10px 0;font-size:.93rem;color:var(--ink2)}
+.note.info{border-left-color:var(--c1)}
+.note strong{color:var(--ink)}
+.hero{background:linear-gradient(160deg,#0A1172 0%,#141e9a 60%,#2b36b8 100%);color:#fff;padding:52px 0 40px}
+.hero h1{margin-bottom:.35em}
+.hero .lead{color:#dfe1f5}
+.hero .btn{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);color:#fff}
+.hero .btn.primary{background:#fff;color:#0A1172;border-color:#fff}
+.hero .btn:hover{background:rgba(255,255,255,.18)}
+.hero .btn.primary:hover{background:#eceefb}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px}
+.tile b{display:block;font-size:2rem;line-height:1.1}
+.tile span{font-size:.88rem;color:#dfe1f5}
+.crumbs{font-size:.9rem;color:var(--ink2);margin:20px 0 6px}
+.footer{margin-top:56px;background:#0A1172;color:#dfe1f5;padding:28px 0;font-size:.92rem}
+.footer a{color:#fff}
+.footer .cols{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between}
+.pill-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0;font-size:.93rem}
+.kv dt{color:var(--ink2)}
+.kv dd{margin:0}
+@media (max-width:520px){.kv{grid-template-columns:1fr}.kv dt{font-weight:650}}
+@media print{.site-header,.theme-btn,.footer{display:none}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.hero.slim{padding:34px 0 26px}
+.filters{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:20px 0 6px}
+.dev-list{display:grid;gap:16px;margin-top:14px}
+.dcard{scroll-margin-top:84px}
+.dcard:target{outline:3px solid var(--c1);outline-offset:3px}
+.dcard header{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.dcard h3{margin:0}
+.dcard .model{font-size:.86rem;color:var(--ink2);margin:2px 0 0}
+.dcard .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}
+@media (max-width:760px){.dcard .cols{grid-template-columns:1fr}}
+.dcard h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:6px 0 4px}
+.dcard ul{margin:0 0 6px;padding-left:1.15em}
+.dcard li{margin:3px 0}
+.dcard .src{font-size:.86rem;color:var(--ink2);margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+.dcard .src a{margin-right:12px}
+.tagrow{display:flex;gap:6px;flex-wrap:wrap}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.sysgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.sysgrid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.sysgrid{grid-template-columns:1fr}}
+.sysgrid .card h3{font-size:1.02rem}
+.matrix td:first-child{white-space:nowrap;font-weight:600}
+.empty{display:none;color:var(--ink2);padding:14px}
+</style>
+</head>
+<body>
+
+<header class="site-header"><div class="wrap">
+  <a class="brand" href="index.html" aria-label="STC CROP - trang chủ">
+    <img class="logo" src="stc-crop-logo.jpg" alt="STC CROP" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+    <span class="logo-fallback" aria-hidden="true">STC</span>
+    <span class="brand-text">STC CROP<small>An ninh thông minh nhà phố</small></span>
+  </a>
+  <nav class="nav" aria-label="Điều hướng chính"><a href="index.html">Tổng quan</a><a href="tinh-nang.html" aria-current="page">Tính năng chi tiết</a><a href="cai-dat.html">Cài đặt & hướng dẫn</a><a href="video.html">Video</a></nav>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Đổi giao diện sáng/tối">Sáng / Tối</button>
+</div></header>
+
+<section class="hero slim"><div class="wrap">
+  <div class="eyebrow" style="color:#c8cbe8">Tính năng chi tiết</div>
+  <h1>Mỗi thiết bị làm gì và lắp ở đâu</h1>
+  <p class="lead">Mỗi thẻ có vai trò, tính năng, lưu ý và nguồn. Huy hiệu <b>Cần thử nghiệm</b> nghĩa là chưa xác minh trên thiết bị thật, sẽ kiểm tra ở bước chạy thử trước khi cam kết với khách.</p>
+  <p style="margin-top:14px"><a class="btn primary" href="#thiet-bi">Xem thiết bị</a> <a class="btn" href="#he-thong">Tính năng hệ thống</a> <a class="btn" href="cai-dat.html">Hướng dẫn cài đặt</a></p>
+</div></section>
+
+<div class="wrap">
+<section class="block" id="thiet-bi">
+  <div class="eyebrow">Thiết bị</div>
+  <h2>10 nhóm thiết bị trong giải pháp</h2>
+  <div class="filters" role="group" aria-label="Lọc theo nhóm"><div class="chips" id="chips"><button class="chip" type="button" data-f="all" aria-pressed="true">Tất cả (10)</button><button class="chip" type="button" data-f="cam" aria-pressed="false"><span class="swatch" style="background:var(--c1)"></span>Camera &amp; đầu ghi (2)</button><button class="chip" type="button" data-f="beam" aria-pressed="false"><span class="swatch" style="background:var(--c2)"></span>Hàng rào hồng ngoại (2)</button><button class="chip" type="button" data-f="door" aria-pressed="false"><span class="swatch" style="background:var(--c3)"></span>Cửa &amp; cảm biến (1)</button><button class="chip" type="button" data-f="btn" aria-pressed="false"><span class="swatch" style="background:var(--c4)"></span>Nút bấm &amp; remote (2)</button><button class="chip" type="button" data-f="hub" aria-pressed="false"><span class="swatch" style="background:var(--c5)"></span>Trung tâm, còi, PIR (3)</button></div></div>
+  <div class="dev-list" id="devList">
+<article class="card dcard" id="camera" data-cat="cam">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c1)"></span>Camera AI ngoài trời</h3>
+      <p class="model">Hikvision DS-2CD2T46G2-ISU/SL (4MP AcuSense) · 5 mắt: C1 đến C5</p>
+    </div>
+    <div class="tagrow"><span class="badge">Camera &amp; đầu ghi</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Nhìn và xác nhận người thật ở mặt tiền, ban công, sân thượng, cửa hậu. Là lớp bằng chứng hình ảnh thứ hai để loại báo giả.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>AcuSense: lọc người và xe khỏi lá cây, mưa, côn trùng, giảm báo giả từ chuyển động thường.</li><li>Vượt hàng rào ảo (line crossing) và xâm nhập vùng (intrusion) chạy ngay trên camera.</li><li>Hậu tố SL: có đèn nháy và còi cảnh báo ngay tại camera, dọa trước khi hú còi trong nhà.</li><li>Cấp nguồn PoE qua switch, một sợi Cat6 cho cả nguồn và hình.</li><li>Hồng ngoại ban đêm, chuẩn chống nước bụi cho ngoài trời.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Đầu ghi DS-7608NXI-K1 không có cổng PoE nên cần switch PoE riêng. Tổng công suất PoE của 5 camera cần cộng lại và so với ngân sách switch (cần thử).</li><li>Đặt cao khoảng 2,8 đến 3,2 m, tránh ngược sáng và tránh hướng vào cửa sổ nhà hàng xóm.</li><li>Còi camera hướng ra ngoài nên chỉ bật khi đã xác nhận người, không cho hú liên tục để khỏi phiền hàng xóm.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://hikvision.vn/" target="_blank" rel="noopener">Hikvision Việt Nam – camera</a><a href="https://camerahikvision.vn/gia-camera-ip-hikvision-moi-nhat/" target="_blank" rel="noopener">Bảng giá tham khảo</a></div>
+</article>
+<article class="card dcard" id="nvr" data-cat="cam">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c1)"></span>Đầu ghi hình NVR 8 kênh</h3>
+      <p class="model">Hikvision DS-7608NXI-K1 · 1 đầu ghi</p>
+    </div>
+    <div class="tagrow"><span class="badge">Camera &amp; đầu ghi</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Ghi hình 24/7, chạy phân tích AcuSense, xem từ xa qua Hik-Connect.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>8 kênh IP, dư 3 kênh cho mở rộng sau này.</li><li>AcuSense ở đầu ghi: tìm kiếm lại theo người/xe, không phải xem cả ngày video.</li><li>Xem trực tiếp và xem lại từ xa bằng ứng dụng Hik-Connect.</li><li>Có thể đặt kịch bản cảnh báo đẩy về điện thoại khi có người vào vùng đã vẽ.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Không có PoE tích hợp, đi kèm switch PoE trong tủ kỹ thuật.</li><li>Nên lắp ổ cứng chuyên dụng cho giám sát, dung lượng theo số ngày lưu cần thiết. Tính lại sau khảo sát.</li><li>Đặt sau UPS để không mất bản ghi khi cúp điện.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://vuhoangtelecom.vn/san-pham/dau-ghi-hinh-ip-8-kenh-acusense-hikvision-ds-7608nxi-k1/" target="_blank" rel="noopener">Trang sản phẩm tham khảo</a></div>
+</article>
+<article class="card dcard" id="hub" data-cat="hub">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c5)"></span>Trung tâm báo động AX PRO</h3>
+      <p class="model">Hikvision DS-PWA64-Kit-WB (bộ kit 64 vùng không dây) · 1 bộ kit</p>
+    </div>
+    <div class="tagrow"><span class="badge">Trung tâm, còi, PIR</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Bộ não của lớp an ninh: nhận tín hiệu từ mọi cảm biến, quyết định chế độ, gọi còi và gửi thông báo.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Không dây 433 MHz (bản -WB), hai chiều, tối đa 64 thiết bị.</li><li>Có pin dự phòng, tiếp tục chạy khi mất điện (khoảng 12 giờ theo cấu hình đã ghi trong bản tư vấn).</li><li>Điều khiển bằng ứng dụng Hik-Connect, remote, bàn phím hoặc thẻ.</li><li>Kết nối mạng để dùng Hik-Connect từ xa, nên đi dây LAN cho ổn định.</li><li>Có chế độ Vắng nhà, Ở nhà (Stay) và phân vùng để tách tầng hoặc khu vực.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Tần số 433 MHz so với 868 MHz cần kiểm tra quy định và hàng phân phối tại Việt Nam trước khi đặt hàng.</li><li>Đặt ở vị trí trung tâm, cách xa khối kim loại lớn và tủ điện để không suy hao sóng.</li><li>Liên kết chéo AX PRO với camera IP là điểm cần thử nghiệm trước khi cam kết với khách.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://hikvision.vn/san-pham/he-thong-bao-dong/tu-bao-dong-khong-day-ax-hub/bo-kit-bao-dong-64-vung-khong-day-hikvision-ds-pwa64-kit-wb.html" target="_blank" rel="noopener">Hikvision VN – bộ kit PWA64</a><a href="https://www.hikvision.com/en/products/Alarm-Products/wireless-intrusion-alarm/ax-pro/" target="_blank" rel="noopener">Hikvision – dòng AX PRO</a><a href="https://hikvisionvietnam.net/blog-hikvision-huong-dan-su-dung-tu-van-camera-hikvision/huong-dan-su-dung-trung-tam-bao-dong-hikvision-ax-pro.html" target="_blank" rel="noopener">Hướng dẫn sử dụng AX PRO</a></div>
+</article>
+<article class="card dcard" id="contact" data-cat="door">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c3)"></span>Cảm biến từ cửa và cửa sổ</h3>
+      <p class="model">Hikvision DS-PDMC-EG2-WB · 6 cái: Đ1 đến Đ6</p>
+    </div>
+    <div class="tagrow"><span class="badge">Cửa &amp; cảm biến</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Biết ngay cửa nào vừa mở. Cửa mở khi đang Đi ngủ là bằng chứng độc lập, đủ để nâng lên báo động cấp 2.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Không dây, pin CR123A, thời gian dùng khoảng 5 năm theo tài liệu nhà sản xuất.</li><li>Có đầu vào có dây để nối contact âm khung cửa, nhìn ngoài không thấy thiết bị.</li><li>Có chống tháo (tamper), báo khi bị gỡ hoặc mở vỏ.</li><li>Ghép nhanh vào trung tâm, đặt tên vùng theo cửa để thông báo dễ hiểu.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Cửa cuốn hoặc cửa sắt rung nhiều cần thử độ nhạy trước khi bật chế độ báo ngay.</li><li>Contact âm phải đi ống sẵn từ đợt một, không thể bổ sung sau khi tô trát.</li><li>Cửa hay dùng ban đêm nên cân nhắc vùng trễ vào ra (entry delay) để chủ nhà kịp tắt.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://abaro.vn/san-pham/cam-bien-cua-tu-khong-day-hikvision-ds-pdmc-eg2-wb/" target="_blank" rel="noopener">Trang sản phẩm DS-PDMC-EG2-WB</a><a href="https://www.hikvision.com/en/products/Alarm-Products/wireless-intrusion-alarm/ax-pro/ds-pdmc-eg2-we-b-/" target="_blank" rel="noopener">Hikvision – DS-PDMC-EG2-WE (bản 868 MHz)</a></div>
+</article>
+<article class="card dcard" id="remote" data-cat="btn">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c4)"></span>Remote đầu giường (nút Đi ngủ)</h3>
+      <p class="model">Hikvision DS-PKF1-WB · 1 đến 2 cái</p>
+    </div>
+    <div class="tagrow"><span class="badge">Nút bấm &amp; remote</span><span class="badge todo">Cần thử nghiệm</span></div>
+  </header>
+  <p>Bấm một nút trước khi ngủ để chuyển hệ thống sang chế độ Đi ngủ, không cần mở điện thoại.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Remote không dây nhiều nút để bật, tắt và chọn chế độ.</li><li>Nhỏ gọn, để đầu giường hoặc gắn tường bằng đế.</li><li>Có thể thêm cho từng thành viên trong nhà.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Cần thử: nút Stay có gán được đúng vào kịch bản Đi ngủ (chỉ canh cửa và beam, tắt PIR trong nhà) hay không. Đây là điểm chưa xác minh.</li><li>Nếu không gán được, phương án dự phòng là phân vùng riêng cho phần vỏ nhà rồi bật bằng nút Vắng nhà của phân vùng đó.</li><li>Phương án khác: dùng bàn phím DS-PK1-E-WB đầu giường hoặc điều khiển bằng ứng dụng Hik-Connect.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="video.html#nhom-remote" target="_blank" rel="noopener">Video: arm/disarm bằng keyfob</a><a href="https://hikvisionvietnam.net/blog-hikvision-huong-dan-su-dung-tu-van-camera-hikvision/huong-dan-cai-dat-va-su-dung-trung-tam-bao-dong-hikvision-ax-pro.html" target="_blank" rel="noopener">Hướng dẫn cài đặt AX PRO</a></div>
+</article>
+<article class="card dcard" id="panic" data-cat="btn">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c4)"></span>Nút khẩn cấp không dây</h3>
+      <p class="model">Hikvision DS-PDEB1-EG2-WB · 1 đến 2 cái</p>
+    </div>
+    <div class="tagrow"><span class="badge">Nút bấm &amp; remote</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Bấm là báo động ngay khi có người lạ trong nhà, hoặc người trong nhà gặp sự cố.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Gắn tường, pin CR2032 khoảng 3 năm.</li><li>Tamper phía trước và phía sau.</li><li>Luôn hoạt động ở mọi chế độ, không phụ thuộc chế độ Ở nhà hay Đi ngủ.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Đặt chỗ với tay được từ giường, ngoài tầm với của trẻ nhỏ.</li><li>Nên thử định kỳ mỗi quý, ghi lại kết quả vào sổ bảo trì.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://www.hikvision.com/en/products/Alarm-Products/wireless-intrusion-alarm/ax-pro/ds-pdeb1-eg2-wb-b-/" target="_blank" rel="noopener">Hikvision – DS-PDEB1-EG2-WB</a><a href="https://hikvisionvietnam.net/san-pham-camera-hikvision/bao-dong-hikvision/nut-an-bao-dong-khan-cap-hikvision-ds-pdeb1-eg2-wb.html" target="_blank" rel="noopener">Trang sản phẩm tại VN</a></div>
+</article>
+<article class="card dcard" id="module" data-cat="beam">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c2)"></span>Module chuyển beam có dây sang không dây</h3>
+      <p class="model">Hikvision DS-PM-WI1 · 1 module cho mỗi tuyến beam</p>
+    </div>
+    <div class="tagrow"><span class="badge">Hàng rào hồng ngoại</span><span class="badge todo">Cần thử nghiệm</span></div>
+  </header>
+  <p>Cầu nối để một bộ beam hồng ngoại (ngõ ra rơ-le khô) báo về trung tâm AX PRO như một cảm biến không dây.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Nhận tín hiệu tiếp điểm từ beam hoặc cảm biến có dây bất kỳ.</li><li>Truyền không dây về trung tâm, không phải kéo dây dài về tủ kỹ thuật.</li><li>Cách cấp nguồn cho module và beam sẽ chốt khi thử nghiệm.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Cần thử: tổng tải nguồn khi cấp cho cả beam và module, và độ ổn định tín hiệu ở tuyến ban công, sân thượng.</li><li>Chọn loại tiếp điểm NC hay NO cho khớp với ngõ ra của beam, đặt kháng trở cuối nếu cần.</li><li>Đặt module trong hộp kín chống nước, cách xa nguồn nhiễu.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="video.html#nhom-beam" target="_blank" rel="noopener">Video: liên kết PM-WI1 và keyfob</a><a href="https://www.hikvision.com/en/products/Alarm-Products/wireless-intrusion-alarm/ax-pro/" target="_blank" rel="noopener">Hikvision – dòng AX PRO</a></div>
+</article>
+<article class="card dcard" id="beam" data-cat="beam">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c2)"></span>Hàng rào hồng ngoại chống trèo (beam)</h3>
+      <p class="model">Takex PBS-15T (gói Chuẩn, Nâng cao); ABH-150L (gói Tiết kiệm) · 2 tuyến: ban công (B1), sân thượng (B2)</p>
+    </div>
+    <div class="tagrow"><span class="badge">Hàng rào hồng ngoại</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Chặn người trèo lan can ban công hoặc mép sân thượng, trước khi họ chạm vào cửa.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Hai trụ phát và thu, tia hồng ngoại vô hình. Loại nhiều tia giúp giảm báo giả do chim hoặc lá (số tia tuỳ model).</li><li>Tầm hoạt động khai báo theo mã sản phẩm (PBS-15T tầm 15 m, đủ cho ban công nhà phố).</li><li>Ngõ ra rơ-le khô nối vào DS-PM-WI1.</li><li>Có thể đặt lại chiều cao tia, căn chỉnh bằng đồng hồ đo tín hiệu.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Nắng chiếu trực tiếp vào bộ thu cuối chiều có thể làm nhiễu, cần chọn hướng lắp và thử vào giờ nắng gắt.</li><li>Mưa lớn, sương mù hay gây cắt tia, cần thử để chỉnh độ nhạy và thời gian giữ.</li><li>Beam là một bằng chứng, không tự hú còi. Cần thêm bằng chứng thứ hai (camera hoặc cửa mở) trong 60 giây.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://abaro.vn/san-pham/bo-beam-hang-rao-chong-trom-hong-ngoai-takex-pbs-15t/" target="_blank" rel="noopener">Takex PBS-15T</a><a href="https://abaro.vn/san-pham/bo-cam-bien-hong-ngoai-tia-kep-takex-pb-30tk/" target="_blank" rel="noopener">Takex PB-30TK</a><a href="https://www.hongthuy.com.vn/blogs/thong-tin-cong-nghe/bao-dong-hang-rao-hong-ngoai-takex" target="_blank" rel="noopener">Tổng quan beam Takex</a></div>
+</article>
+<article class="card dcard" id="siren" data-cat="hub">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c5)"></span>Còi trong nhà</h3>
+      <p class="model">Hikvision DS-PS1-E-WB · 1 cái</p>
+    </div>
+    <div class="tagrow"><span class="badge">Trung tâm, còi, PIR</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Đánh thức gia đình khi có báo động cấp 2. Hướng vào trong nhà, không hú ra đường.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Còi không dây do trung tâm điều khiển, có thể đặt thời gian hú.</li><li>Cấu hình tối đa 60 giây, lặp tối đa 2 lần cách nhau 5 phút.</li><li>Có tamper chống tháo.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Đặt ở hành lang giữa nhà, hướng vào trong. Không đặt sát cửa sổ hoặc ban công.</li><li>Không đặt còi ngoài trời để tránh phiền hàng xóm.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://www.hikvision.com/en/products/Alarm-Products/wireless-intrusion-alarm/ax-pro/" target="_blank" rel="noopener">Hikvision – dòng AX PRO</a></div>
+</article>
+<article class="card dcard" id="pir" data-cat="hub">
+  <header>
+    <div>
+      <h3><span class="swatch" style="background:var(--c5)"></span>Cảm biến chuyển động trong nhà (PIR)</h3>
+      <p class="model">PIR không dây trong bộ AX PRO · 1 đến 2 cái</p>
+    </div>
+    <div class="tagrow"><span class="badge">Trung tâm, còi, PIR</span><span class="badge ok">Đã đối chiếu tài liệu</span></div>
+  </header>
+  <p>Chỉ canh trong nhà khi Vắng nhà. Tắt khi Ở nhà và Đi ngủ để không báo giả do người nhà hay thú cưng.</p>
+  <div class="cols">
+    <div><h4>Tính năng chính</h4><ul><li>Phát hiện chuyển động bằng hồng ngoại thụ động, không dây.</li><li>Được trung tâm tắt theo chế độ, không tự báo khi bạn đi lại trong nhà.</li></ul></div>
+    <div><h4>Lưu ý khi lắp và dùng</h4><ul><li>Tránh hướng thẳng vào cửa sổ, điều hoà, quạt.</li><li>Nếu nhà có thú cưng, chọn loại miễn nhiễu vật nuôi hoặc chỉ canh tầng trệt.</li></ul></div>
+  </div>
+  <div class="src">Nguồn: <a href="https://www.hikvision.com/en/products/Alarm-Products/wireless-intrusion-alarm/ax-pro/" target="_blank" rel="noopener">Hikvision – dòng AX PRO</a></div>
+</article></div>
+  <p class="empty" id="empty">Không có thiết bị nào trong nhóm này.</p>
+</section>
+
+<section class="block" id="he-thong">
+  <div class="eyebrow">Hệ thống</div>
+  <h2>Tính năng ở cấp hệ thống</h2>
+  <p class="lead">Những gì tạo ra sự khác biệt so với một bộ camera thông thường: logic báo động chứ không chỉ ghi hình.</p>
+  <div class="sysgrid" style="margin-top:14px"><div class="card"><h3>Ba chế độ</h3><p style="margin:0;color:var(--ink2)">Ở nhà: chỉ camera ghi hình và cửa chính. Đi ngủ: canh cửa, beam và camera, tắt PIR trong nhà. Vắng nhà: canh tất cả.</p></div><div class="card"><h3>Xác nhận chéo hai bằng chứng</h3><p style="margin:0;color:var(--ink2)">Beam bị chặn chưa đủ để hú. Cần thêm một bằng chứng độc lập (camera thấy người, hoặc cửa mở) trong 60 giây thì mới lên cấp 2.</p></div><div class="card"><h3>Hai cấp báo động</h3><p style="margin:0;color:var(--ink2)">Cấp 1: đèn nháy và còi camera ngoài trời, thông báo điện thoại. Cấp 2: còi trong nhà tối đa 60 giây, lặp tối đa 2 lần cách nhau 5 phút.</p></div><div class="card"><h3>Không phiền hàng xóm</h3><p style="margin:0;color:var(--ink2)">Còi chỉ hướng vào trong nhà. Còi ngoài trời tắt hoặc chỉ nháy. Thời gian hú bị giới hạn cứng.</p></div><div class="card"><h3>Thông báo và xem từ xa</h3><p style="margin:0;color:var(--ink2)">Hik-Connect gửi thông báo và cho xem trực tiếp hoặc xem lại. Nên tạo tài khoản chủ nhà và tài khoản kỹ thuật STC tách riêng.</p></div><div class="card"><h3>Chạy khi mất điện</h3><p style="margin:0;color:var(--ink2)">Trung tâm có pin dự phòng. NVR, switch PoE và router đặt sau UPS. Thời gian chạy thực tế cần đo lúc nghiệm thu.</p></div></div>
+</section>
+
+<section class="block" id="bang-tong-hop">
+  <div class="eyebrow">Tổng hợp</div>
+  <h2>Nguồn điện, kết nối và mức độ kiểm chứng</h2>
+  <div class="card scroll-x" style="padding:6px 10px">
+    <table class="tbl matrix"><thead><tr><th>Thiết bị</th><th>Nguồn</th><th>Kết nối</th><th>Chức năng</th><th>Trạng thái</th></tr></thead><tbody><tr><td>Camera</td><td>PoE qua Cat6</td><td>Dây</td><td>Hình + vượt hàng rào ảo</td><td>Đã đối chiếu</td></tr><tr><td>NVR</td><td>Điện lưới + UPS</td><td>LAN</td><td>Ghi hình, tìm kiếm</td><td>Đã đối chiếu</td></tr><tr><td>Trung tâm AX PRO</td><td>Điện + pin dự phòng</td><td>LAN/Wi-Fi + 433 MHz</td><td>Điều khiển chế độ, còi</td><td>Cần thử: 433 vs 868 MHz</td></tr><tr><td>Cảm biến cửa</td><td>Pin CR123A</td><td>433 MHz</td><td>Cửa mở, tamper</td><td>Đã đối chiếu</td></tr><tr><td>Remote</td><td>Pin</td><td>433 MHz</td><td>Đổi chế độ</td><td>Cần thử: gán nút Đi ngủ</td></tr><tr><td>Nút khẩn cấp</td><td>Pin CR2032</td><td>433 MHz</td><td>Báo ngay</td><td>Đã đối chiếu</td></tr><tr><td>Beam + PM-WI1</td><td>Nguồn riêng</td><td>Dây ngắn + 433 MHz</td><td>Chặn tia</td><td>Cần thử: nắng, mưa, tải nguồn</td></tr><tr><td>Còi trong nhà</td><td>Pin/nguồn</td><td>433 MHz</td><td>Hú tối đa 60 giây</td><td>Đã đối chiếu</td></tr><tr><td>PIR</td><td>Pin</td><td>433 MHz</td><td>Chuyển động khi Vắng nhà</td><td>Đã đối chiếu</td></tr></tbody></table>
+  </div>
+  <p class="note info" style="margin-top:14px"><strong>Lưu ý:</strong> thông số lấy từ trang nhà sản xuất và các nhà phân phối, có thể khác giữa các lô hàng và bản Gen2. Đối chiếu lại model thực nhận trước khi thi công.</p>
+</section>
+</div>
+
+
+<footer class="footer"><div class="wrap"><div class="cols">
+  <div><strong style="color:#fff">Công ty TNHH Đầu tư và Công nghệ STC (STC CROP)</strong><br>Buôn Ma Thuột, Đắk Lắk<br>smarthomedaklak.com</div>
+  <div>Hotline: <a href="tel:0823047047">0823 047 047</a><br>Zalo: <a href="https://zalo.me/0934750769">0934 750 769</a></div>
+  <div>Bản tư vấn dự kiến, cập nhật 21/09/2026.<br>Giá và cấu hình chốt chính thức sau khảo sát hiện trường.</div>
+</div></div></footer>
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  if(btn){btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var sysDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var isDark=cur?cur==='dark':sysDark;
+    root.setAttribute('data-theme',isDark?'light':'dark');
+  });}
+})();
+</script>
+<script>
+(function(){
+  var chips=document.getElementById('chips'), list=document.getElementById('devList'), empty=document.getElementById('empty');
+  function apply(f){
+    var n=0;
+    [].forEach.call(list.children,function(c){var show=f==='all'||c.getAttribute('data-cat')===f;c.style.display=show?'':'none';if(show)n++;});
+    empty.style.display=n?'none':'block';
+    [].forEach.call(chips.querySelectorAll('.chip'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-f')===f?'true':'false');});
+  }
+  chips.addEventListener('click',function(ev){var b=ev.target.closest('.chip');if(b)apply(b.getAttribute('data-f'));});
+  if(location.hash){var t=document.getElementById(location.hash.slice(1));if(t&&t.classList.contains('dcard')){setTimeout(function(){t.scrollIntoView();},50);}}
+})();
+</script>
+</body>
+</html>
